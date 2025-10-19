@@ -1,179 +1,175 @@
-Airbnb-Prototype
+# Airbnb Prototype Backend API
 
-This is a prototype of Airbnb using ReactJS frontend, Node.js/Express backend, MySQL database, and Sequelize ORM. It includes basic traveler and owner features along with an AI agent integration for itinerary planning.
+A Node.js + Express.js backend API for the Airbnb prototype application.
 
-Table of Contents
+## Features
 
-Prerequisites
+### Authentication
+- Session-based authentication using Express-session
+- Secure password hashing with bcrypt.js
+- Separate user types: Traveler and Owner
+- Profile management for both user types
 
-Backend Setup
+### Traveler Features
+- User registration and login
+- Profile management with all required fields
+- Property search with filters (location, dates, guests, price)
+- Property details viewing
+- Booking creation and management
+- Favorites system
+- Booking history
 
-Clone Repository
+### Owner Features
+- User registration and login
+- Profile management
+- Property posting and management
+- Booking request management (Accept/Cancel)
+- Owner dashboard with statistics
 
-Install Dependencies
+### Property Management
+- CRUD operations for properties
+- Property search and filtering
+- Availability management
+- Image upload support
 
-Database Setup
+### Booking System
+- Booking creation with PENDING status
+- Owner can ACCEPT or CANCEL bookings
+- Traveler can CANCEL their bookings
+- Booking history for both user types
+- Conflict checking for availability
 
-Configure Database Connection
+## Technology Stack
 
-Run Migrations
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **MySQL** - Database
+- **Sequelize** - ORM
+- **bcryptjs** - Password hashing
+- **express-session** - Session management
+- **multer** - File uploads
+- **joi** - Input validation
+- **cors** - Cross-origin resource sharing
 
-Team Workflow with Sequelize
+## API Endpoints
 
-Frontend Setup
+### Authentication
+- `POST /api/auth/register/traveler` - Register traveler
+- `POST /api/auth/register/owner` - Register owner
+- `POST /api/auth/login` - Login
+- `POST /api/auth/logout` - Logout
+- `GET /api/auth/profile` - Get current user profile
 
-Running the Application
+### Traveler Routes
+- `GET /api/travelers/profile` - Get traveler profile
+- `PUT /api/travelers/profile` - Update traveler profile
+- `POST /api/travelers/profile/picture` - Upload profile picture
+- `GET /api/travelers/properties/search` - Search properties
+- `GET /api/travelers/properties/:id` - Get property details
 
-Notes
+### Owner Routes
+- `GET /api/owners/profile` - Get owner profile
+- `PUT /api/owners/profile` - Update owner profile
+- `POST /api/owners/profile/picture` - Upload profile picture
+- `GET /api/owners/dashboard` - Get owner dashboard
 
-Prerequisites
+### Property Routes
+- `GET /api/properties` - Get all properties (public)
+- `GET /api/properties/search` - Search properties (public)
+- `GET /api/properties/:id` - Get property by ID (public)
+- `POST /api/properties` - Create property (owner only)
+- `GET /api/properties/owner/properties` - Get owner's properties
+- `PUT /api/properties/:id` - Update property (owner only)
+- `DELETE /api/properties/:id` - Delete property (owner only)
 
-Node.js v18+
+### Booking Routes
+- `POST /api/bookings` - Create booking (traveler)
+- `GET /api/bookings/traveler` - Get traveler's bookings
+- `GET /api/bookings/owner` - Get owner's booking requests
+- `PUT /api/bookings/:id/accept` - Accept booking (owner)
+- `PUT /api/bookings/:id/cancel` - Cancel booking (traveler/owner)
 
-npm (comes with Node.js)
+### Favorites Routes
+- `POST /api/favorites` - Add to favorites (traveler)
+- `GET /api/favorites` - Get favorites (traveler)
+- `DELETE /api/favorites/:id` - Remove from favorites (traveler)
+- `GET /api/favorites/check/:propertyId` - Check if property is favorited
 
-MySQL Server (local installation)
+## Installation
 
-Optional: Git client
-
-Backend Setup
-Clone Repository
-git clone https://github.com/<your-username>/Airbnb-Prototype.git
-cd Airbnb-Prototype/backend
-
-Install Dependencies
+1. Install dependencies:
+```bash
 npm install
+```
 
-
-Installs sequelize, sequelize-cli, mysql2, and other dependencies.
-
-Database Setup
-
-Log into MySQL:
-
+2. Set up database:
+```bash
+# Create database
 mysql -u root -p
-
-
-Create the database and a development user:
-
 CREATE DATABASE airbnb_db;
 
-CREATE USER 'airbnb_user'@'localhost' IDENTIFIED BY 'password123';
-GRANT ALL PRIVILEGES ON airbnb_db.* TO 'airbnb_user'@'localhost';
-FLUSH PRIVILEGES;
-
-
-Make sure the database name matches backend/config/config.json.
-
-Configure Database Connection
-
-Edit backend/config/config.json:
-
-{
-  "development": {
-    "username": "airbnb_user",
-    "password": "password123",
-    "database": "airbnb_db",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
-  },
-  "test": { },
-  "production": { }
-}
-
-
-Optionally, use .env to store credentials securely.
-
-Run Migrations
-
-Create tables based on Sequelize models:
-
+# Run migrations
 npx sequelize-cli db:migrate
+```
 
-
-To seed initial data (optional):
-
-npx sequelize-cli db:seed:all
-
-
-Verify connection (optional):
-
-node src/config/db.js
-
-
-You should see: ✅ Database connected successfully
-
-Team Workflow with Sequelize
-Pull Latest Changes
-git pull origin dev
-npx sequelize-cli db:migrate
-
-Creating a New Feature
-git checkout dev
-git pull origin dev
-git checkout -b feature/<feature-name>
-
-npx sequelize-cli model:generate --name <ModelName> --attributes <field:type,...>
-npx sequelize-cli db:migrate
-
-git add .
-git commit -m "feat: add <ModelName> model and migration"
-git push -u origin feature/<feature-name>
-
-
-Open a Pull Request to merge into dev.
-
-Keeping Databases in Sync
-
-Pull latest migrations:
-
-git pull origin dev
-npx sequelize-cli db:migrate
-
-
-Reset database if needed:
-
-npx sequelize-cli db:migrate:undo:all
-npx sequelize-cli db:migrate
-
-Frontend Setup
-Navigate to frontend folder
-cd ../frontend
-
-Install Dependencies
-npm install
-
-Run Frontend
-npm start
-
-
-The app will run at http://localhost:3000 by default.
-
-Make sure the backend API (http://localhost:4000) is running.
-
-Running the Application
-
-Start backend:
-
-cd backend
+3. Start the server:
+```bash
 npm run dev
+```
 
+## Environment Variables
 
-Start frontend:
+Create a `.env` file in the backend directory:
 
-cd frontend
-npm start
+```env
+PORT=5000
+NODE_ENV=development
+SESSION_SECRET=your-secret-key
+FRONTEND_URL=http://localhost:3000
+```
 
+## Database Schema
 
-Access the app in your browser: http://localhost:3000
+### Travelers Table
+- id, name, email, password, phone, aboutMe, city, country, languages, gender, profilePicture, createdAt, updatedAt
 
-Notes
+### Owners Table
+- id, name, email, password, location, phone, aboutMe, profilePicture, createdAt, updatedAt
 
-Each teammate should use their own local database.
+### Properties Table
+- id, name, type, description, location, city, state, country, price, bedrooms, bathrooms, amenities, maxGuests, availableFrom, availableTo, images, isActive, ownerId, createdAt, updatedAt
 
-Always use Sequelize migrations and seeds to sync schema.
+### Bookings Table
+- id, travelerId, propertyId, startDate, endDate, guests, status, totalPrice, createdAt, updatedAt
 
-Feature branches should be created from dev.
-Commit messages should be descriptive, e.g., feat: add Booking model.
+### Favorites Table
+- id, travelerId, propertyId, createdAt, updatedAt
 
-Do not include node_modules in the repo; use package.json to install dependencies.
+## Security Features
+
+- Password hashing with bcrypt
+- Session-based authentication
+- Input validation with Joi
+- File upload restrictions
+- CORS configuration
+- Error handling middleware
+
+## Error Handling
+
+All API responses follow a consistent format:
+
+```json
+{
+  "success": true/false,
+  "message": "Description",
+  "data": {} // Optional
+}
+```
+
+## File Uploads
+
+Profile pictures are stored in the `uploads/` directory with the following naming convention:
+- `profile-{timestamp}-{random}.{extension}`
+
+Supported file types: Images only
+Maximum file size: 5MB

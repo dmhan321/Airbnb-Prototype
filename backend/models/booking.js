@@ -4,23 +4,61 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Booking extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      Booking.belongsTo(models.Traveler, {
+        foreignKey: 'travelerId',
+        as: 'traveler'
+      });
+      
+      Booking.belongsTo(models.Property, {
+        foreignKey: 'propertyId',
+        as: 'property'
+      });
     }
   }
   Booking.init({
-    travelerId: DataTypes.INTEGER,
-    propertyId: DataTypes.INTEGER,
-    startDate: DataTypes.DATE,
-    endDate: DataTypes.DATE,
-    guests: DataTypes.INTEGER,
-    status: DataTypes.STRING,
-    totalPrice: DataTypes.DECIMAL
+    travelerId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Travelers',
+        key: 'id'
+      }
+    },
+    propertyId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Properties',
+        key: 'id'
+      }
+    },
+    startDate: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    endDate: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    guests: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 1
+      }
+    },
+    status: {
+      type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'CANCELLED'),
+      defaultValue: 'PENDING'
+    },
+    totalPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      validate: {
+        min: 0
+      }
+    }
   }, {
     sequelize,
     modelName: 'Booking',

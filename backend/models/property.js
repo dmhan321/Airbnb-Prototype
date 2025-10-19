@@ -4,29 +4,90 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Property extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      Property.belongsTo(models.Owner, {
+        foreignKey: 'ownerId',
+        as: 'owner'
+      });
+      
+      Property.hasMany(models.Booking, {
+        foreignKey: 'propertyId',
+        as: 'bookings'
+      });
+      
+      Property.hasMany(models.Favorite, {
+        foreignKey: 'propertyId',
+        as: 'favorites'
+      });
     }
   }
   Property.init({
-    name: DataTypes.STRING,
-    type: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    type: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     description: DataTypes.TEXT,
-    location: DataTypes.STRING,
-    city: DataTypes.STRING,
+    location: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     state: DataTypes.STRING,
-    country: DataTypes.STRING,
-    price: DataTypes.DECIMAL,
-    bedrooms: DataTypes.INTEGER,
-    bathrooms: DataTypes.INTEGER,
+    country: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    price: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      validate: {
+        min: 0
+      }
+    },
+    bedrooms: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 0
+      }
+    },
+    bathrooms: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 0
+      }
+    },
     amenities: DataTypes.TEXT,
-    availability: DataTypes.BOOLEAN,
-    ownerId: DataTypes.INTEGER
+    maxGuests: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: 1
+      }
+    },
+    availableFrom: DataTypes.DATE,
+    availableTo: DataTypes.DATE,
+    images: DataTypes.JSON,
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
+    ownerId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Owners',
+        key: 'id'
+      }
+    }
   }, {
     sequelize,
     modelName: 'Property',
