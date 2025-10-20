@@ -1,4 +1,4 @@
-const { Property, Owner, Booking } = require('../models');
+const { Property, Owner, Booking, Favorite } = require('../models');
 const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
@@ -273,11 +273,20 @@ const updateProperty = async (req, res) => {
 const deleteProperty = async (req, res) => {
   try {
     const { id } = req.params;
-    const ownerId = req.user.id;
+    const ownerId = req.user?.id;
+
+
+    if (!ownerId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated'
+      });
+    }
 
     const property = await Property.findOne({
       where: { id, ownerId }
     });
+
 
     if (!property) {
       return res.status(404).json({
@@ -294,6 +303,7 @@ const deleteProperty = async (req, res) => {
       }
     });
 
+
     if (activeBookings > 0) {
       return res.status(400).json({
         success: false,
@@ -301,7 +311,25 @@ const deleteProperty = async (req, res) => {
       });
     }
 
-    await property.destroy();
+    
+    // Delete related records first
+    try {
+      // Delete all favorites for this property
+      await Favorite.destroy({
+        where: { propertyId: id }
+      });
+      
+      // Delete all bookings for this property (cancelled bookings are safe to delete)
+      await Booking.destroy({
+        where: { propertyId: id }
+      });
+      
+      // Now delete the property
+      await property.destroy();
+    } catch (deleteError) {
+      console.error('Error during property deletion:', deleteError);
+      throw deleteError;
+    }
 
     res.json({
       success: true,

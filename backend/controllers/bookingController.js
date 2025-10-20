@@ -107,6 +107,9 @@ const createBooking = async (req, res) => {
 // Get traveler's bookings
 const getTravelerBookings = async (req, res) => {
   try {
+    // Auto-complete bookings first
+    await autoCompleteBookings();
+    
     const travelerId = req.user.id;
 
     const bookings = await Booking.findAll({
@@ -143,6 +146,9 @@ const getTravelerBookings = async (req, res) => {
 // Get owner's booking requests
 const getOwnerBookings = async (req, res) => {
   try {
+    // Auto-complete bookings first
+    await autoCompleteBookings();
+    
     const ownerId = req.user.id;
 
     // Get owner's properties
@@ -194,7 +200,15 @@ const getOwnerBookings = async (req, res) => {
 const acceptBooking = async (req, res) => {
   try {
     const { id } = req.params;
-    const ownerId = req.user.id;
+    const ownerId = req.user?.id;
+
+
+    if (!ownerId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated'
+      });
+    }
 
     const booking = await Booking.findByPk(id, {
       include: [
@@ -205,6 +219,7 @@ const acceptBooking = async (req, res) => {
         }
       ]
     });
+
 
     if (!booking) {
       return res.status(404).json({
@@ -240,8 +255,16 @@ const acceptBooking = async (req, res) => {
 const cancelBooking = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id;
     const userType = req.userType;
+
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated'
+      });
+    }
 
     const booking = await Booking.findByPk(id, {
       include: [
@@ -251,6 +274,7 @@ const cancelBooking = async (req, res) => {
         }
       ]
     });
+
 
     if (!booking) {
       return res.status(404).json({
@@ -262,6 +286,7 @@ const cancelBooking = async (req, res) => {
     // Check authorization
     const isTraveler = userType === 'traveler' && booking.travelerId === userId;
     const isOwner = userType === 'owner' && booking.property.ownerId === userId;
+
 
     if (!isTraveler && !isOwner) {
       return res.status(403).json({
@@ -337,11 +362,37 @@ const getPropertyBlockedDates = async (req, res) => {
   }
 };
 
+// Auto-complete bookings that have passed their checkout date
+const autoCompleteBookings = async () => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Start of today
+    
+    const result = await Booking.update(
+      { status: 'COMPLETED' },
+      {
+        where: {
+          status: 'ACCEPTED',
+          endDate: {
+            [Op.lt]: today
+          }
+        }
+      }
+    );
+    
+    return result[0];
+  } catch (error) {
+    console.error('Error auto-completing bookings:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   createBooking,
   getTravelerBookings,
   getOwnerBookings,
   acceptBooking,
   cancelBooking,
-  getPropertyBlockedDates
+  getPropertyBlockedDates,
+  autoCompleteBookings
 };
