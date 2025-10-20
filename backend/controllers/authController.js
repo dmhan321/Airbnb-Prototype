@@ -168,6 +168,7 @@ const login = async (req, res) => {
     req.session.userId = user.id;
     req.session.userType = userType;
 
+
     res.json({
       success: true,
       message: 'Login successful',
@@ -240,9 +241,10 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    const { name, email, phone, aboutMe, city, country, languages, gender } = req.body;
+    const { name, email, phone, aboutMe, address, city, state, country, languages, gender } = req.body;
     const userId = req.user.id;
     const userType = req.session.userType;
+    
 
     let user;
     if (userType === 'traveler') {
@@ -278,16 +280,20 @@ const updateProfile = async (req, res) => {
     }
 
     // Update user data
-    await user.update({
+    const updateData = {
       name: name || user.name,
       email: email || user.email,
       phone: phone || user.phone,
       aboutMe: aboutMe || user.aboutMe,
+      address: address || user.address,
       city: city || user.city,
+      state: state || user.state,
       country: country || user.country,
       languages: languages || user.languages,
       gender: gender || user.gender
-    });
+    };
+    
+    await user.update(updateData);
 
     // Remove password from response
     const userData = { ...user.toJSON() };
@@ -349,9 +355,26 @@ const uploadProfilePicture = async (req, res) => {
     }
 
     // Delete old profile picture if it exists
-    if (user.profilePicture && user.profilePicture.startsWith('/uploads/profile-pictures/')) {
-      const oldFilePath = user.profilePicture.substring(1); // Remove leading slash
-      if (fs.existsSync(oldFilePath)) {
+    if (user.profilePicture) {
+      let oldFilePath;
+      
+      // Handle both full URL and relative path formats
+      if (user.profilePicture.startsWith('http')) {
+        // Full URL format: extract the relative path
+        const urlParts = user.profilePicture.split('/uploads/');
+        if (urlParts.length > 1) {
+          oldFilePath = 'uploads/' + urlParts[1];
+        }
+      } else if (user.profilePicture.startsWith('/uploads/')) {
+        // Relative path format: remove leading slash
+        oldFilePath = user.profilePicture.substring(1);
+      } else if (user.profilePicture.startsWith('uploads/')) {
+        // Already relative path
+        oldFilePath = user.profilePicture;
+      }
+      
+      // Delete the file if it exists
+      if (oldFilePath && fs.existsSync(oldFilePath)) {
         fs.unlinkSync(oldFilePath);
       }
     }
