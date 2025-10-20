@@ -1,126 +1,102 @@
 # Airbnb Prototype Backend API
 
-A Node.js + Express.js backend API for the Airbnb prototype application.
+Node.js + Express + MySQL backend for the Airbnb Prototype application.
 
-## Features
-
-### Authentication
-- Session-based authentication using Express-session
-- Secure password hashing with bcrypt.js
-- Separate user types: Traveler and Owner
-- Profile management for both user types
-
-### Traveler Features
-- User registration and login
-- Profile management with all required fields
-- Property search with filters (location, dates, guests, price)
-- Property details viewing
-- Booking creation and management
-- Favorites system
-- Booking history
-
-### Owner Features
-- User registration and login
-- Profile management
-- Property posting and management
-- Booking request management (Accept/Cancel)
-- Owner dashboard with statistics
-
-### Property Management
-- CRUD operations for properties
-- Property search and filtering
-- Availability management
-- Image upload support
-
-### Booking System
-- Booking creation with PENDING status
-- Owner can ACCEPT or CANCEL bookings
-- Traveler can CANCEL their bookings
-- Booking history for both user types
-- Conflict checking for availability
-
-## Technology Stack
-
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MySQL** - Database
-- **Sequelize** - ORM
-- **bcryptjs** - Password hashing
-- **express-session** - Session management
-- **multer** - File uploads
-- **joi** - Input validation
-- **cors** - Cross-origin resource sharing
-
-## API Endpoints
+## Features (current)
 
 ### Authentication
-- `POST /api/auth/register/traveler` - Register traveler
-- `POST /api/auth/register/owner` - Register owner
-- `POST /api/auth/login` - Login
-- `POST /api/auth/logout` - Logout
-- `GET /api/auth/profile` - Get current user profile
+- Session-based authentication (express-session)
+- Password hashing (bcrypt)
+- User types: Traveler and Owner
 
-### Traveler Routes
-- `GET /api/travelers/profile` - Get traveler profile
-- `PUT /api/travelers/profile` - Update traveler profile
-- `POST /api/travelers/profile/picture` - Upload profile picture
-- `GET /api/travelers/properties/search` - Search properties
-- `GET /api/travelers/properties/:id` - Get property details
+### Profiles
+- View/Update profiles for both roles
+- Fields include: name, email, phone, aboutMe, address, city, state, country, languages, gender, profilePicture
+- Profile picture upload (multer); static serving of uploaded images
 
-### Owner Routes
-- `GET /api/owners/profile` - Get owner profile
-- `PUT /api/owners/profile` - Update owner profile
-- `POST /api/owners/profile/picture` - Upload profile picture
-- `GET /api/owners/dashboard` - Get owner dashboard
+### Properties
+- CRUD (owner only)
+- Public search and detail view
+- Availability and basic validation
 
-### Property Routes
-- `GET /api/properties` - Get all properties (public)
-- `GET /api/properties/search` - Search properties (public)
-- `GET /api/properties/:id` - Get property by ID (public)
-- `POST /api/properties` - Create property (owner only)
-- `GET /api/properties/owner/properties` - Get owner's properties
-- `PUT /api/properties/:id` - Update property (owner only)
-- `DELETE /api/properties/:id` - Delete property (owner only)
+### Bookings
+- Create (traveler)
+- Accept/Cancel (owner), Cancel (traveler)
+- Status: PENDING, ACCEPTED, CANCELLED, COMPLETED (auto-complete after endDate)
 
-### Booking Routes
-- `POST /api/bookings` - Create booking (traveler)
-- `GET /api/bookings/traveler` - Get traveler's bookings
-- `GET /api/bookings/owner` - Get owner's booking requests
-- `PUT /api/bookings/:id/accept` - Accept booking (owner)
-- `PUT /api/bookings/:id/cancel` - Cancel booking (traveler/owner)
+### Favorites (traveler)
+- Add / Remove / List
+- Check if favorited
 
-### Favorites Routes
-- `POST /api/favorites` - Add to favorites (traveler)
-- `GET /api/favorites` - Get favorites (traveler)
-- `DELETE /api/favorites/:id` - Remove from favorites (traveler)
-- `GET /api/favorites/check/:propertyId` - Check if property is favorited
+## Tech Stack
+- Node.js, Express
+- MySQL (via Sequelize ORM)
+- multer (uploads), cors, joi (validation)
 
-## Installation
+## API Endpoints (high level)
 
-1. Install dependencies:
+Authentication
+- POST `/api/auth/register/traveler`
+- POST `/api/auth/register/owner`
+- POST `/api/auth/login`
+- POST `/api/auth/logout`
+- GET `/api/auth/profile` (current user)
+- PUT `/api/auth/profile` (update current user)
+
+Properties
+- GET `/api/properties` (public)
+- GET `/api/properties/search` (public)
+- GET `/api/properties/:id` (public)
+- POST `/api/properties` (owner)
+- PUT `/api/properties/:id` (owner)
+- DELETE `/api/properties/:id` (owner)
+- GET `/api/properties/owner/properties` (owner)
+
+Bookings
+- POST `/api/bookings` (traveler)
+- GET `/api/bookings/traveler` (traveler)
+- GET `/api/bookings/owner` (owner)
+- PUT `/api/bookings/:id/accept` (owner)
+- PUT `/api/bookings/:id/cancel` (traveler or owner as authorized)
+
+Favorites (traveler)
+- POST `/api/favorites`
+- GET `/api/favorites`
+- DELETE `/api/favorites/:id`
+- GET `/api/favorites/check/:propertyId`
+
+## Setup
+
+1) Install dependencies
 ```bash
 npm install
 ```
 
-2. Set up database:
-```bash
-# Create database
-mysql -u root -p
-CREATE DATABASE airbnb_db;
+2) Database (MySQL)
+Create DB and user (customize creds):
+```sql
+CREATE DATABASE IF NOT EXISTS airbnb_db;
+CREATE USER IF NOT EXISTS 'airbnb_user'@'localhost' IDENTIFIED BY 'your_secure_password';
+GRANT ALL PRIVILEGES ON airbnb_db.* TO 'airbnb_user'@'localhost';
+FLUSH PRIVILEGES;
+```
 
-# Run migrations
+Configure credentials (either env or config.json):
+```env
+DB_USERNAME=airbnb_user
+DB_PASSWORD=your_secure_password
+DB_DATABASE=airbnb_db
+DB_HOST=127.0.0.1
+DB_DIALECT=mysql
+```
+
+Run migrations:
+```bash
 npx sequelize-cli db:migrate
 ```
 
-3. Start the server:
-```bash
-npm run dev
-```
-
-## Environment Variables
-
-Create a `.env` file in the backend directory:
-
+3) Environment
+Create `.env` in backend:
 ```env
 PORT=5000
 NODE_ENV=development
@@ -128,48 +104,12 @@ SESSION_SECRET=your-secret-key
 FRONTEND_URL=http://localhost:3000
 ```
 
-## Database Schema
-
-### Travelers Table
-- id, name, email, password, phone, aboutMe, city, country, languages, gender, profilePicture, createdAt, updatedAt
-
-### Owners Table
-- id, name, email, password, location, phone, aboutMe, profilePicture, createdAt, updatedAt
-
-### Properties Table
-- id, name, type, description, location, city, state, country, price, bedrooms, bathrooms, amenities, maxGuests, availableFrom, availableTo, images, isActive, ownerId, createdAt, updatedAt
-
-### Bookings Table
-- id, travelerId, propertyId, startDate, endDate, guests, status, totalPrice, createdAt, updatedAt
-
-### Favorites Table
-- id, travelerId, propertyId, createdAt, updatedAt
-
-## Security Features
-
-- Password hashing with bcrypt
-- Session-based authentication
-- Input validation with Joi
-- File upload restrictions
-- CORS configuration
-- Error handling middleware
-
-## Error Handling
-
-All API responses follow a consistent format:
-
-```json
-{
-  "success": true/false,
-  "message": "Description",
-  "data": {} // Optional
-}
+4) Start server
+```bash
+npm start
 ```
 
-## File Uploads
-
-Profile pictures are stored in the `uploads/` directory with the following naming convention:
-- `profile-{timestamp}-{random}.{extension}`
-
-Supported file types: Images only
-Maximum file size: 5MB
+## Notes
+- Uploaded files served from `/uploads` via Express static
+- Error responses are structured with `{ success, message, ... }`
+- Ensure CORS `FRONTEND_URL` matches your frontend origin
