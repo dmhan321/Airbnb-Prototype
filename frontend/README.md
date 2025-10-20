@@ -5,9 +5,11 @@ React frontend for the Airbnb prototype application with Bootstrap styling.
 ## Features
 
 - **Authentication**: Login/Signup for Travelers and Owners
-- **Traveler Dashboard**: Property search and booking
-- **Owner Dashboard**: Property management
-- **AI Agent**: Floating agent button for trip recommendations
+- **Unified Dashboards**: Tabbed dashboards for Traveler and Owner
+- **Property Search & Details**: Browse, search, and view property details
+- **Bookings**: Create/cancel (traveler), accept/cancel (owner), status filters
+- **Favorites**: Add/remove favorite properties (traveler)
+- **Profiles**: View/Edit profile with photo upload and address fields
 - **Responsive Design**: Bootstrap-based responsive UI
 
 ## Setup
@@ -31,17 +33,20 @@ npm start
 - Bootstrap 5.2.0
 - Axios 1.3.0
 
-## Project Structure
+## Project Structure (current)
 
 ```
 src/
 ├── components/
-│   ├── auth/           # Authentication components
-│   ├── traveler/       # Traveler-specific components
-│   ├── owner/          # Owner-specific components
-│   └── agent/          # AI agent components
-├── services/           # API service functions
-└── App.js             # Main application component
+│   ├── auth/             # Login / Signup
+│   ├── common/           # Shared components (HomePage, ProtectedRoute, profiles)
+│   ├── traveler/         # Traveler UI (dashboard, search, details)
+│   └── owner/            # Owner UI (dashboard, properties)
+├── contexts/             # AuthContext (global auth state)
+├── services/             # API services (auth, property, booking, favorite)
+├── App.js                # Routes and app shell
+├── index.js              # React entry point
+└── index.css             # Global styles
 ```
 
 ## API Integration
@@ -52,3 +57,4 @@ The frontend connects to the backend API running on `http://localhost:5000/api` 
 - `propertyService`: Property management and search
 - `bookingService`: Booking operations
 - `favoriteService`: Favorite properties management
+
