@@ -1,6 +1,6 @@
 # 🏠 Airbnb Prototype
 
-A full-stack Airbnb clone built with React, Node.js, Express, and SQLite. Features complete user authentication, property management, booking system, and favorites functionality.
+A full-stack Airbnb clone built with React, Node.js, Express, and MySQL. Features complete user authentication, property management, booking system, and favorites functionality.
 
 ## Quick Start
 
@@ -27,8 +27,41 @@ cd backend
 npm install
 ```
 
-#### Database Setup
-The application uses SQLite (no additional database setup required). The database will be created automatically when you run the application.
+#### Database Setup (MySQL)
+This project uses MySQL in all environments. Create a local database and user, then run migrations.
+
+1) Start MySQL locally and open a MySQL shell, then run (customize username/password):
+```sql
+CREATE DATABASE IF NOT EXISTS airbnb_db;
+CREATE USER IF NOT EXISTS 'airbnb_user'@'localhost' IDENTIFIED BY 'your_secure_password';
+GRANT ALL PRIVILEGES ON airbnb_db.* TO 'airbnb_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+2) Configure credentials
+
+Option A: Environment variables (recommended)
+```
+DB_USERNAME=airbnb_user
+DB_PASSWORD=your_secure_password
+DB_DATABASE=airbnb_db
+DB_HOST=127.0.0.1
+DB_DIALECT=mysql
+```
+
+Option B: Edit `backend/config/config.json` (for local dev only)
+```json
+{
+  "development": {
+    "username": "airbnb_user",
+    "password": "your_secure_password",
+    "database": "airbnb_db",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false
+  }
+}
+```
 
 #### Run Database Migrations
 ```bash
