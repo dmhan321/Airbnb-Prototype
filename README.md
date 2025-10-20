@@ -2,40 +2,7 @@
 
 A full-stack Airbnb clone built with React, Node.js, Express, and SQLite. Features complete user authentication, property management, booking system, and favorites functionality.
 
-## ✨ Features
-
-### 🔐 Authentication & User Management
-- **User Registration & Login** - Separate flows for travelers and property owners
-- **Profile Management** - Complete profiles with photo uploads and address information
-- **Session Management** - Secure authentication with session-based auth
-
-### 🏡 Property Management
-- **Property Creation** - Owners can create detailed property listings
-- **Property Search** - Advanced search with location, price, and date filters
-- **Property Details** - Comprehensive property information with photo galleries
-- **Property Editing** - Owners can update their property listings
-- **Property Deletion** - Safe deletion with booking constraint checks
-
-### 📅 Booking System
-- **Booking Creation** - Travelers can book available properties
-- **Status Management** - PENDING → ACCEPTED → COMPLETED workflow
-- **Owner Controls** - Accept/decline booking requests
-- **Automatic Completion** - Bookings auto-complete after checkout date
-- **Booking History** - Complete booking management for both users
-
-### ❤️ Favorites System
-- **Add to Favorites** - Travelers can save properties they like
-- **Favorites Management** - View and manage saved properties
-- **Quick Access** - Easy navigation to favorite properties
-
-### 🎨 User Interface
-- **Responsive Design** - Works on desktop, tablet, and mobile
-- **Unified Dashboards** - Tabbed interface for easy navigation
-- **Modern UI** - Clean, Bootstrap-based design
-- **Loading States** - User feedback during operations
-- **Error Handling** - Comprehensive error management
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - **Node.js** v18 or higher
@@ -95,7 +62,7 @@ The frontend will run on `http://localhost:3000`
 ### 4. Access the Application
 Open your browser and navigate to `http://localhost:3000`
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 Airbnb-Prototype/
@@ -119,7 +86,7 @@ Airbnb-Prototype/
 └── README.md
 ```
 
-## 🔧 Development
+## Development
 
 ### Backend Development
 - **API Endpoints** - RESTful API with proper error handling
@@ -141,7 +108,7 @@ Airbnb-Prototype/
 - **Bookings** - Booking system with status management
 - **Favorites** - User property favorites
 
-## 🧪 Testing the Application
+## Testing the Application
 
 ### 1. Create User Accounts
 - Register as a **Traveler** to book properties
@@ -164,7 +131,7 @@ Airbnb-Prototype/
 - View favorite properties
 - Remove from favorites
 
-## 🛠️ Available Scripts
+## Available Scripts
 
 ### Backend Scripts
 ```bash
@@ -179,7 +146,7 @@ npm build          # Build for production
 npm test           # Run tests
 ```
 
-## 📱 API Endpoints
+## API Endpoints
 
 ### Authentication
 - `POST /api/auth/register` - User registration
@@ -207,66 +174,6 @@ npm test           # Run tests
 - `POST /api/favorites` - Add to favorites
 - `DELETE /api/favorites/:id` - Remove from favorites
 
-## 🚀 Deployment
-
-### Backend Deployment
-1. Set up production database
-2. Update environment variables
-3. Run migrations: `npx sequelize-cli db:migrate`
-4. Start server: `npm start`
-
-### Frontend Deployment
-1. Build the app: `npm run build`
-2. Deploy the `build` folder to your hosting service
-3. Configure API endpoints for production
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add some amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
-
-## 📝 Development Notes
-
-- **Database**: SQLite for development, easily configurable for production
-- **Authentication**: Session-based with secure cookie handling
-- **File Uploads**: Profile pictures and property images
-- **Responsive Design**: Bootstrap-based responsive layout
-- **Error Handling**: Comprehensive error management throughout
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Port Already in Use**
-   - Backend: Change port in `backend/server.js`
-   - Frontend: Change port in `frontend/package.json`
-
-2. **Database Connection Issues**
-   - Ensure SQLite is properly installed
-   - Check database file permissions
-
-3. **CORS Issues**
-   - Backend CORS is configured for `http://localhost:3000`
-   - Update CORS settings if using different ports
-
-4. **File Upload Issues**
-   - Check `uploads` directory permissions
-   - Ensure Multer is properly configured
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 👥 Team
-
-- **Frontend**: React with modern hooks and context API
-- **Backend**: Node.js with Express and Sequelize ORM
-- **Database**: SQLite with proper migrations
-- **Authentication**: Session-based with middleware protection
-
----
-
-**Happy Coding! 🎉**
