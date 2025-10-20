@@ -232,7 +232,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"John Updated\",\n  \"phone\": \"+1234567890\",\n  \"aboutMe\": \"Updated about me\",\n  \"city\": \"San Francisco\",\n  \"country\": \"USA\"\n}"
+              "raw": "{\n  \"name\": \"John Updated\",\n  \"email\": \"john.updated@example.com\",\n  \"phone\": \"+1234567890\",\n  \"aboutMe\": \"Updated about me\",\n  \"address\": \"123 Main St Apt 5\",\n  \"city\": \"San Francisco\",\n  \"state\": \"CA\",\n  \"country\": \"USA\",\n  \"languages\": \"English, Spanish\",\n  \"gender\": \"male\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/travelers/profile",
@@ -304,7 +304,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Jane Updated\",\n  \"location\": \"San Francisco, CA\",\n  \"phone\": \"+1234567891\",\n  \"aboutMe\": \"Updated about me\"\n}"
+              "raw": "{\n  \"name\": \"Jane Updated\",\n  \"email\": \"jane.updated@example.com\",\n  \"phone\": \"+1234567891\",\n  \"aboutMe\": \"Updated about me\",\n  \"address\": \"456 Market St Suite 200\",\n  \"city\": \"San Francisco\",\n  \"state\": \"CA\",\n  \"country\": \"USA\",\n  \"languages\": \"English, Mandarin\",\n  \"gender\": \"female\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/owners/profile",
