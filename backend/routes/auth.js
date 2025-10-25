@@ -15,7 +15,7 @@ const {
   validateOwnerRegistration,
   validateLogin
 } = require('../middleware/validation');
-const { getCurrentUser } = require('../middleware/authMiddleware');
+const { getCurrentUser, requireAuth } = require('../middleware/authMiddleware'); 
 
 // Public routes
 router.post('/register/traveler', validateTravelerRegistration, registerTraveler);
@@ -24,7 +24,7 @@ router.post('/login', validateLogin, login);
 router.post('/logout', logout);
 
 // Protected routes
-router.get('/profile', getCurrentUser, getProfile);
+router.get('/profile', requireAuth, getCurrentUser, getProfile);
 router.put('/profile', getCurrentUser, updateProfile);
 router.post('/upload-profile-picture', getCurrentUser, upload.single('profilePicture'), uploadProfilePicture);
 

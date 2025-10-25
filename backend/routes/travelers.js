@@ -1,4 +1,5 @@
 const express = require('express');
+const { Traveler } = require('../models');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
@@ -11,7 +12,9 @@ const {
 } = require('../controllers/travelerController');
 const { requireAuth, requireTraveler, getCurrentUser } = require('../middleware/authMiddleware');
 
-// Configure multer for file uploads
+// ==============================
+// Multer Setup for Profile Pics
+// ==============================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -24,7 +27,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
@@ -34,17 +37,42 @@ const upload = multer({
   }
 });
 
-// All routes require authentication and traveler access
+// =======================
+// Traveler Public Profile
+// (Used by FastAPI Agent)
+// =======================
+router.get('/:id', async (req, res) => {
+  try {
+    const traveler = await Traveler.findByPk(req.params.id);
+    if (!traveler) {
+      return res.status(404).json({ error: 'Traveler not found' });
+    }
+    res.json(traveler);
+  } catch (err) {
+    console.error('Traveler fetch error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
+// ========================
+// Global Auth Middleware
+// ========================
 router.use(requireAuth);
 router.use(requireTraveler);
 router.use(getCurrentUser);
 
-// Profile routes
+// =======================
+// Profile Management
+// =======================
 router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 router.post('/profile/picture', upload.single('profilePicture'), uploadProfilePicture);
 
-// Property routes
+// =======================
+// Property Search
+// =======================
 router.get('/properties/search', searchProperties);
 router.get('/properties/:id', getPropertyDetails);
 
