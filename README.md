@@ -111,26 +111,42 @@ Open your browser and navigate to `http://localhost:3000`
 ## Project Structure
 
 ```
-Airbnb-Prototype/
-├── backend/                 # Node.js/Express Backend
-│   ├── controllers/         # API route handlers
-│   ├── models/             # Sequelize database models
-│   ├── routes/             # API routes
-│   ├── middleware/         # Authentication middleware
-│   ├── migrations/         # Database migrations
-│   └── server.js          # Main server file
-├── frontend/               # React Frontend
-│   ├── src/
-│   │   ├── components/     # React components
-│   │   │   ├── auth/       # Authentication components
-│   │   │   ├── common/     # Shared components
-│   │   │   ├── owner/      # Owner-specific components
-│   │   │   └── traveler/   # Traveler-specific components
-│   │   ├── contexts/       # React contexts (AuthContext)
-│   │   ├── services/       # API service functions
-│   │   └── App.js         # Main app component
-└── README.md
+Airbnb‑Prototype/
+│
+├── backend/                             # Node.js/Express Backend
+│   ├── controllers/                     # API route handlers
+│   ├── models/                          # Sequelize database models
+│   ├── routes/                          # API routes
+│   ├── middleware/                      # Authentication middleware
+│   ├── migrations/                      # Database migrations
+│   └── server.js                        # Main server file
+│
+├── agent‑backend/                       # AI Agent Backend (FastAPI + LangChain)
+│   ├── __pycache__/                     # Python cache files
+│   ├── .env                             # Environment variables (API keys)
+│   ├── main.py                          # FastAPI entrypoint for AI agent
+│   └── test.py                          # Local testing for LLM responses
+│
+├── frontend/                            # React Frontend
+│   ├── public/                          # Static assets
+│   └── src/                             # React source code
+│       ├── components/                  # React components
+│       │   ├── auth/                    # Authentication components
+│       │   ├── common/                  # Shared components
+│       │   ├── owner/                   # Owner‑specific components
+│       │   ├── traveler/                # Traveler‑specific components
+│       │   └── agent/                   # AI Concierge Agent components
+│       │       ├── AgentButton.jsx      # Floating agent button UI
+│       │       ├── AgentPanel.jsx       # Popup agent interface
+│       │       └── AgentStyles.css      # Styling for floating agent widget
+│       │
+│       ├── contexts/                    # React contexts (AuthContext)
+│       ├── services/                    # API service functions
+│       └── App.js                       # Main app component
+│
+└── README.md                            # Project documentation
 ```
+
 
 ## Development
 
