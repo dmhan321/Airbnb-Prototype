@@ -7,12 +7,14 @@ require('dotenv').config();
 const db = require('./models');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
+  origin: 'http://localhost:3000',  // ⬅️ make sure this is hardcoded or correctly resolved
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
@@ -24,8 +26,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,
-    maxAge: 24 * 60 * 60 * 1000
+    secure: false,              // keep false for local dev (no HTTPS)
+    sameSite: 'lax',            // <-- this enables cookie sharing across ports
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
   }
 }));
 
@@ -39,6 +42,7 @@ app.use('/api/owners', require('./routes/owners'));
 app.use('/api/properties', require('./routes/properties'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/favorites', require('./routes/favorites'));
+app.use('/api/agent', require('./routes/agent'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
