@@ -161,6 +161,21 @@ Airbnb-Prototype/
 - **Bookings** - Booking system with status management
 - **Favorites** - User property favorites
 
+## AI Agent Integration 
+The AI Concierge Agent is an intelligent, context-aware assistant that enhances the travel planning experience by generating personalized recommendations based on each user’s travel profile. Built using FastAPI and LangChain, the agent dynamically pulls the currently logged-in traveler’s information, including 
+- "About Me" preferences from the Express backend.
+- Travel details: the city destination, time of the trip
+- Other traveler data.
+  
+This traveler data is injected into structured prompt templates that are sent to OpenAI’s GPT-4 model, enabling the agent to return highly customized, human-like suggestions. The agent supports both free-form natural language queries (e.g., “What should I do on a rainy afternoon in San Jose?”) and four dedicated action buttons in the UI:
+- **Create day-to-day plan**: returns a structured 3-day itinerary with morning, afternoon, and evening activities. 
+- **Activity recommendation**: suggests local attractions with metadata such as tags, address, and accessibility info.
+- **Restaurant recommendation**: filters food options based on the user’s dietary preferences (e.g., vegan, gluten-free).
+- **Packing checklist**: generates a weather-aware packing list tailored to the traveler and destination.
+  
+The agent runs in a floating UI widget accessible from any page in the app, allowing users to ask questions or trigger quick actions at any point during their session. The backend communicates securely with OpenAI using an API key, and the responses are parsed and rendered in the React frontend with proper formatting for readability.
+
+
 ## Testing the Application
 
 ### 1. Create User Accounts
