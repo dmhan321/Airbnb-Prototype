@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": "911105",
+    "password": "",
     "database": "airbnb_db",
     "host": "127.0.0.1",
     "dialect": "mysql",
@@ -9,7 +9,7 @@
   },
   "test": {
     "username": "root",
-    "password": "911105",
+    "password": "",
     "database": "airbnb_db_test",
     "host": "127.0.0.1",
     "dialect": "mysql",
@@ -17,7 +17,7 @@
   },
   "production": {
     "username": "root",
-    "password": "911105",
+    "password": "",
     "database": "airbnb_db_prod",
     "host": "127.0.0.1",
     "dialect": "mysql",
