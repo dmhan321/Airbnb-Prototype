@@ -72,9 +72,22 @@ npx sequelize-cli db:migrate
 ```bash
 npm start
 ```
-The backend will run on `http://localhost:5000`
+The backend will run on `http://localhost:5001`
 
-### 3. Frontend Setup
+### 3. Agent Backend Setup 
+
+#### Navigate to Frontend Directory
+```bash
+cd ../agent-backend
+```
+#### Start the Agent Backend Server 
+```bash
+uvicorn main:app --reload --port 5005
+```
+The agent-backend will run on `http://localhost:5005`
+
+
+### 4. Frontend Setup
 
 #### Navigate to Frontend Directory
 ```bash
@@ -92,7 +105,7 @@ npm start
 ```
 The frontend will run on `http://localhost:3000`
 
-### 4. Access the Application
+### 5. Access the Application
 Open your browser and navigate to `http://localhost:3000`
 
 ## Project Structure
