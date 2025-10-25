@@ -148,6 +148,13 @@ Airbnb-Prototype/
 - **Service Layer** - Clean API communication
 - **Responsive Design** - Mobile-first approach
 
+### AI Agent Development 
+- **FastAPI Backend**
+- **LangChain Integration** – Leveraged LangChain to build prompt chains, enabling structured, context-aware output.
+- **Dynamic Prompting** – Supported multiple modes (itinerary, activity, restaurant, packing) using modular prompt templates tailored to traveler preferences.
+- **Traveler Profile API** – Integrated with the main Express backend to fetch real-time traveler data (preferences, city) and feed it into the LLM prompt.
+- **Frontend Integration** – Connected the AI Agent to the React app via a floating UI widget, allowing users to interact with the agent on any page.
+
 ### Database Schema
 - **Users** - Travelers and Owners with profiles
 - **Properties** - Property listings with images
