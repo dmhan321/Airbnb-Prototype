@@ -111,26 +111,42 @@ Open your browser and navigate to `http://localhost:3000`
 ## Project Structure
 
 ```
-Airbnb-Prototype/
-├── backend/                 # Node.js/Express Backend
-│   ├── controllers/         # API route handlers
-│   ├── models/             # Sequelize database models
-│   ├── routes/             # API routes
-│   ├── middleware/         # Authentication middleware
-│   ├── migrations/         # Database migrations
-│   └── server.js          # Main server file
-├── frontend/               # React Frontend
-│   ├── src/
-│   │   ├── components/     # React components
-│   │   │   ├── auth/       # Authentication components
-│   │   │   ├── common/     # Shared components
-│   │   │   ├── owner/      # Owner-specific components
-│   │   │   └── traveler/   # Traveler-specific components
-│   │   ├── contexts/       # React contexts (AuthContext)
-│   │   ├── services/       # API service functions
-│   │   └── App.js         # Main app component
-└── README.md
+Airbnb‑Prototype/
+│
+├── backend/                             # Node.js/Express Backend
+│   ├── controllers/                     # API route handlers
+│   ├── models/                          # Sequelize database models
+│   ├── routes/                          # API routes
+│   ├── middleware/                      # Authentication middleware
+│   ├── migrations/                      # Database migrations
+│   └── server.js                        # Main server file
+│
+├── agent‑backend/                       # AI Agent Backend (FastAPI + LangChain)
+│   ├── __pycache__/                     # Python cache files
+│   ├── .env                             # Environment variables (API keys)
+│   ├── main.py                          # FastAPI entrypoint for AI agent
+│   └── test.py                          # Local testing for LLM responses
+│
+├── frontend/                            # React Frontend
+│   ├── public/                          # Static assets
+│   └── src/                             # React source code
+│       ├── components/                  # React components
+│       │   ├── auth/                    # Authentication components
+│       │   ├── common/                  # Shared components
+│       │   ├── owner/                   # Owner‑specific components
+│       │   ├── traveler/                # Traveler‑specific components
+│       │   └── agent/                   # AI Concierge Agent components
+│       │       ├── AgentButton.jsx      # Floating agent button UI
+│       │       ├── AgentPanel.jsx       # Popup agent interface
+│       │       └── AgentStyles.css      # Styling for floating agent widget
+│       │
+│       ├── contexts/                    # React contexts (AuthContext)
+│       ├── services/                    # API service functions
+│       └── App.js                       # Main app component
+│
+└── README.md                            # Project documentation
 ```
+
 
 ## Development
 
@@ -160,6 +176,21 @@ Airbnb-Prototype/
 - **Properties** - Property listings with images
 - **Bookings** - Booking system with status management
 - **Favorites** - User property favorites
+
+## AI Agent Integration 
+The AI Concierge Agent is an intelligent, context-aware assistant that enhances the travel planning experience by generating personalized recommendations based on each user’s travel profile. Built using FastAPI and LangChain, the agent dynamically pulls the currently logged-in traveler’s information, including 
+- "About Me" preferences from the Express backend.
+- Travel details: the city destination, time of the trip
+- Other traveler data.
+  
+This traveler data is injected into structured prompt templates that are sent to OpenAI’s GPT-4 model, enabling the agent to return highly customized, human-like suggestions. The agent supports both free-form natural language queries (e.g., “What should I do on a rainy afternoon in San Jose?”) and four dedicated action buttons in the UI:
+- **Create day-to-day plan**: returns a structured 3-day itinerary with morning, afternoon, and evening activities. 
+- **Activity recommendation**: suggests local attractions with metadata such as tags, address, and accessibility info.
+- **Restaurant recommendation**: filters food options based on the user’s dietary preferences (e.g., vegan, gluten-free).
+- **Packing checklist**: generates a weather-aware packing list tailored to the traveler and destination.
+  
+The agent runs in a floating UI widget accessible from any page in the app, allowing users to ask questions or trigger quick actions at any point during their session. The backend communicates securely with OpenAI using an API key, and the responses are parsed and rendered in the React frontend with proper formatting for readability.
+
 
 ## Testing the Application
 
