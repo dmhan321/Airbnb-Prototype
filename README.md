@@ -127,7 +127,8 @@ Airbnb-Prototype/
 │   ├── middleware/   # Auth middleware
 │   ├── migrations/   # DB migrations
 │   ├── uploads/      # File uploads
-│   └── server.js
+│   |── server.js
+|   |__ .env
 │
 ├── agent-backend/    # AI agent (FastAPI + LangChain)
 │   ├── main.py
@@ -145,7 +146,7 @@ Airbnb-Prototype/
 │   ├── services/     # API services
 │   ├── utils/        # Utility functions
 │   └── App.js
-│
+|   |__ .env
 └── README.md
 ```
 
