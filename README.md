@@ -84,6 +84,8 @@ CREATE USER IF NOT EXISTS 'airbnb_user'@'localhost' IDENTIFIED BY 'your_secure_p
 GRANT ALL PRIVILEGES ON airbnb_db.* TO 'airbnb_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
+Database schema: 
+<img width="815" height="926" alt="db schema" src="https://github.com/user-attachments/assets/4913822f-210e-44e9-aef6-e3ca6f422bb5" />
 
 ### 4️⃣ Run Each Service
 
