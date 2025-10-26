@@ -267,49 +267,6 @@ The AI Concierge Agent provides intelligent, context-aware travel assistance:
 - **Bookings** - Booking system with status management
 - **Favorites** - User property favorites
 
-## 🔄 AI-Enhanced User Workflows
-
-### **Complete Traveler Experience**
-1. **Discovery Phase**
-   - Browse properties with AI-powered search suggestions
-   - Get personalized property recommendations based on preferences
-   - Use AI to research neighborhoods and local attractions
-
-2. **Planning Phase**
-   - Select a property and use AI agent to plan activities nearby
-   - Get restaurant recommendations based on dietary preferences
-   - Generate personalized packing lists for the destination
-
-3. **Booking Phase**
-   - Make reservations with confidence using AI-generated insights
-   - Get real-time availability and pricing recommendations
-   - Receive booking confirmations with AI-suggested next steps
-
-4. **Pre-Trip Phase**
-   - Access detailed itineraries with morning, afternoon, and evening activities
-   - Get weather-aware packing checklists
-   - Receive local tips and recommendations
-
-5. **During Trip**
-   - Access floating AI widget for real-time assistance
-   - Get recommendations for last-minute activities
-   - Ask questions about local transportation, dining, or attractions
-
-### **Complete Owner Experience**
-1. **Property Setup**
-   - Create listings with AI-suggested descriptions and amenities
-   - Get pricing recommendations based on local market data
-   - Use AI to identify nearby attractions to highlight
-
-2. **Management Phase**
-   - Receive AI insights on booking patterns and guest preferences
-   - Get suggestions for property improvements
-   - Use AI to craft professional responses to guest inquiries
-
-3. **Optimization Phase**
-   - Analyze performance with AI-powered analytics
-   - Get recommendations for pricing adjustments
-   - Learn about seasonal trends and local events
 
 ## 🧪 Testing the Application
 
