@@ -6,12 +6,12 @@ const schemas = {
     name: Joi.string().min(2).max(50).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
-    phone: Joi.string().optional(),
-    aboutMe: Joi.string().max(500).optional(),
-    city: Joi.string().max(50).optional(),
-    country: Joi.string().max(50).optional(),
-    languages: Joi.string().max(100).optional(),
-    gender: Joi.string().valid('male', 'female', 'other').optional()
+    phone: Joi.string().allow('').optional(),
+    aboutMe: Joi.string().max(500).allow('').optional(),
+    city: Joi.string().max(50).allow('').optional(),
+    country: Joi.string().max(50).allow('').optional(),
+    languages: Joi.string().max(100).allow('').optional(),
+    gender: Joi.string().valid('male', 'female', 'other').allow('').optional()
   }),
 
   ownerRegistration: Joi.object({
@@ -19,8 +19,8 @@ const schemas = {
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
     location: Joi.string().min(2).max(100).required(),
-    phone: Joi.string().optional(),
-    aboutMe: Joi.string().max(500).optional()
+    phone: Joi.string().allow('').optional(),
+    aboutMe: Joi.string().max(500).allow('').optional()
   }),
 
   login: Joi.object({

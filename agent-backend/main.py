@@ -34,7 +34,7 @@ async def agent_button_handler(req: ButtonRequest):
 
     # Step 1: Fetch traveler profile from your Express backend
     try:
-        res = requests.get(f"http://localhost:5001/api/travelers/{traveler_id}")
+        res = requests.get(f"http://localhost:5000/api/travelers/{traveler_id}")
         traveler = res.json()
     except Exception as e:
         return {"success": False, "error": f"Failed to fetch traveler info: {str(e)}"}
