@@ -201,7 +201,6 @@ Airbnb-Prototype/
 ### Owner
 1. **List** → Add properties with AI-suggested descriptions
 2. **Manage** → Handle bookings and updates
-3. **Optimize** → Receive AI-based insights
 
 ## 🧪 Testing
 
