@@ -95,32 +95,3 @@ REACT_APP_API_URL=https://your-api-domain.com/api
 REACT_APP_BACKEND_URL=https://your-api-domain.com
 ```
 
-## Files Updated
-
-The following files have been updated to use environment variables:
-
-### Frontend Files:
-- `src/services/api.js` - API base URL
-- `src/utils/imageUtils.js` - Backend URL for images
-- `src/components/traveler/PropertyDetails.jsx` - API URL for blocked dates
-- `src/components/agent/AgentPanel.jsx` - API and Agent URLs
-
-### Backend Files:
-- `server.js` - CORS origin URL
-- `controllers/propertyController.js` - Already using process.env.BACKEND_URL
-- `controllers/authController.js` - Already using process.env.BACKEND_URL
-
-## Benefits
-
-1. **Easy Configuration**: Change ports/URLs by editing .env files only
-2. **Environment-Specific**: Different configs for development, staging, production
-3. **Security**: Sensitive data like database passwords in environment variables
-4. **No Code Changes**: Modify configuration without touching source code
-5. **Team Collaboration**: Each developer can have their own .env file
-
-## Important Notes
-
-- **Frontend**: React environment variables must start with `REACT_APP_`
-- **Backend**: Node.js environment variables can be any name
-- **Security**: Never commit .env files to version control
-- **Fallbacks**: All environment variables have fallback values for development
