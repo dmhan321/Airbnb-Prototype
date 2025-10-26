@@ -104,7 +104,7 @@ venv\Scripts\activate       # Windows
 # or
 source venv/bin/activate    # macOS/Linux
 pip install -r requirements.txt
-python main.py
+uvicorn main:app --reload --port 5005
 ```
 **Runs at** `http://localhost:5005`
 
