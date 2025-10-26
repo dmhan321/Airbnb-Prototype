@@ -6,12 +6,22 @@ const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+// Use environment variables for database configuration
+const config = {
+  database: process.env.DB_NAME || 'airbnb_db',
+  username: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  host: process.env.DB_HOST || '127.0.0.1',
+  port: process.env.DB_PORT || 3306,
+  dialect: 'mysql',
+  logging: process.env.NODE_ENV === 'development' ? console.log : false
+};
+
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+if (process.env.DATABASE_URL) {
+  sequelize = new Sequelize(process.env.DATABASE_URL, config);
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }

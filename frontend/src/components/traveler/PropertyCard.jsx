@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { favoriteService } from '../../services/favoriteService';
 import { useAuth } from '../../contexts/AuthContext';
 
-const PropertyCard = ({ property }) => {
+const PropertyCard = ({ property, onFavoriteChange }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isFavorited, setIsFavorited] = useState(false);
@@ -39,6 +39,10 @@ const PropertyCard = ({ property }) => {
         const response = await favoriteService.removeFavorite(property.id);
         if (response.success) {
           setIsFavorited(false);
+          // Notify parent component that favorite was removed
+          if (onFavoriteChange) {
+            onFavoriteChange(property.id, false);
+          }
         } else {
           throw new Error(response.message || 'Failed to remove favorite');
         }
@@ -46,6 +50,10 @@ const PropertyCard = ({ property }) => {
         const response = await favoriteService.addFavorite(property.id);
         if (response.success) {
           setIsFavorited(true);
+          // Notify parent component that favorite was added
+          if (onFavoriteChange) {
+            onFavoriteChange(property.id, true);
+          }
         } else {
           throw new Error(response.message || 'Failed to add favorite');
         }

@@ -116,6 +116,12 @@ const TravelerDashboard = () => {
     }
   };
 
+  // Handle favorite changes from PropertyCard
+  const handleFavoriteChange = (propertyId, isFavorited) => {
+    // Reload favorites data to reflect the change
+    loadAllData();
+  };
+
   // Simple profile save handler
   const handleProfileSave = (updatedUser) => {
     setProfileData(updatedUser);
@@ -197,7 +203,7 @@ const TravelerDashboard = () => {
                   <div className="row">
                     {properties.map(property => (
                       <div key={property.id} className="col-md-6 col-lg-4 mb-4">
-                        <PropertyCard property={property} />
+                        <PropertyCard property={property} onFavoriteChange={handleFavoriteChange} />
                       </div>
                     ))}
                   </div>
@@ -398,6 +404,7 @@ const TravelerDashboard = () => {
                       user={profileData} 
                       onSave={handleProfileSave}
                       onCancel={handleCancelEdit}
+                      userType="traveler"
                     />
                   ) : (
                     <SimpleProfileView 

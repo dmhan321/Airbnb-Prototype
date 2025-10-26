@@ -44,13 +44,17 @@ export const propertyService = {
   },
 
   // Upload property photos
-  uploadPropertyPhotos: async (propertyId, photos) => {
+  uploadPropertyPhotos: async (propertyId, photos, replace = false) => {
     const formData = new FormData();
     photos.forEach(photo => {
       formData.append('photos', photo);
     });
     
-    const response = await api.post(`/properties/${propertyId}/photos`, formData, {
+    const url = replace 
+      ? `/properties/${propertyId}/photos?replace=true`
+      : `/properties/${propertyId}/photos`;
+    
+    const response = await api.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

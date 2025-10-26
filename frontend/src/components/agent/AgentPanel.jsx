@@ -26,7 +26,7 @@ function AgentPanel({onClose}) {
     setLoading(true);
     setResponse('');
     try {
-      const res = await fetch('http://localhost:5000/api/agent', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/agent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -52,7 +52,7 @@ function AgentPanel({onClose}) {
     setLoading(true);
     setResponse('');
     try {
-      const res = await fetch('http://localhost:5005/agent-button', {
+      const res = await fetch(`${process.env.REACT_APP_AGENT_URL || 'http://localhost:5005'}/agent-button`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

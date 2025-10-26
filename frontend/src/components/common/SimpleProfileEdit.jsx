@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { authService } from '../../services/authService';
+import { getImageUrl } from '../../utils/imageUtils';
 
-const SimpleProfileEdit = ({ user, onSave, onCancel }) => {
+const SimpleProfileEdit = ({ user, onSave, onCancel, userType = 'traveler' }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,6 +18,8 @@ const SimpleProfileEdit = ({ user, onSave, onCancel }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [profilePicturePreview, setProfilePicturePreview] = useState(getImageUrl(user?.profilePicture));
 
   // Initialize form data when user prop changes
   useEffect(() => {
@@ -33,6 +36,8 @@ const SimpleProfileEdit = ({ user, onSave, onCancel }) => {
         languages: user.languages || '',
         gender: user.gender || ''
       });
+      // Get full URL for existing profile pictures
+      setProfilePicturePreview(getImageUrl(user.profilePicture));
     }
   }, [user]);
 
@@ -43,6 +48,18 @@ const SimpleProfileEdit = ({ user, onSave, onCancel }) => {
     });
   };
 
+  const handlePictureChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePicture(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfilePicturePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -50,7 +67,22 @@ const SimpleProfileEdit = ({ user, onSave, onCancel }) => {
     setSuccess('');
 
     try {
-      const response = await authService.updateProfile(formData);
+      // If there's a new profile picture, upload it first
+      let profilePictureUrl = user.profilePicture;
+      if (profilePicture) {
+        const uploadResponse = await authService.uploadProfilePicture(profilePicture, userType);
+        if (uploadResponse.success) {
+          profilePictureUrl = uploadResponse.profilePicture;
+        }
+      }
+
+      // Update profile with new data including picture URL
+      const updateData = {
+        ...formData,
+        profilePicture: profilePictureUrl
+      };
+
+      const response = await authService.updateProfile(updateData);
       
       if (response.success) {
         setSuccess('Profile updated successfully!');
@@ -109,6 +141,42 @@ const SimpleProfileEdit = ({ user, onSave, onCancel }) => {
         {success && <div className="alert alert-success">{success}</div>}
 
         <form onSubmit={handleSubmit}>
+          {/* Profile Picture Section */}
+          <div className="row mb-4">
+            <div className="col-12">
+              <label className="form-label">Profile Picture</label>
+              <div className="d-flex align-items-center">
+                <div className="me-3">
+                  {profilePicturePreview ? (
+                    <img 
+                      src={profilePicturePreview} 
+                      alt="Profile Preview" 
+                      className="rounded-circle"
+                      style={{ width: '80px', height: '80px', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <div 
+                      className="rounded-circle bg-light d-flex align-items-center justify-content-center"
+                      style={{ width: '80px', height: '80px' }}
+                    >
+                      <span className="text-muted">👤</span>
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <input
+                    type="file"
+                    className="form-control"
+                    accept="image/*"
+                    onChange={handlePictureChange}
+                    style={{ maxWidth: '300px' }}
+                  />
+                  <small className="text-muted">Upload a profile picture (JPG, PNG, GIF)</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="row">
             <div className="col-md-6 mb-3">
               <label className="form-label">Name *</label>

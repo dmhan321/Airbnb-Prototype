@@ -392,6 +392,7 @@ const OwnerDashboard = () => {
                       user={profileData} 
                       onSave={handleProfileSave}
                       onCancel={handleCancelEdit}
+                      userType="owner"
                     />
                   ) : (
                     <SimpleProfileView 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { getImageUrl } from '../../utils/imageUtils';
 
 const SimpleProfileView = ({ user, onEdit }) => {
   if (!user) {
@@ -20,10 +21,13 @@ const SimpleProfileView = ({ user, onEdit }) => {
           <div className="col-md-3 text-center mb-4">
             {user.profilePicture ? (
               <img 
-                src={user.profilePicture} 
+                src={getImageUrl(user.profilePicture)} 
                 alt="Profile" 
                 className="img-fluid rounded-circle mb-3"
                 style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
               />
             ) : (
               <div 

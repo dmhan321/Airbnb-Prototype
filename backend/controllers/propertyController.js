@@ -235,7 +235,8 @@ const updateProperty = async (req, res) => {
       amenities,
       maxGuests,
       availableFrom,
-      availableTo
+      availableTo,
+      images
     } = req.body;
 
     await property.update({
@@ -248,11 +249,12 @@ const updateProperty = async (req, res) => {
       country: country || property.country,
       price: price || property.price,
       bedrooms: bedrooms || property.bedrooms,
-      bathrooms: bathrooms || property.bathrooms,
+      bathrooms: bathrooms,
       amenities: amenities || property.amenities,
       maxGuests: maxGuests || property.maxGuests,
       availableFrom: availableFrom || property.availableFrom,
-      availableTo: availableTo || property.availableTo
+      availableTo: availableTo || property.availableTo,
+      images: images || property.images
     });
 
     res.json({
@@ -474,7 +476,16 @@ const uploadPropertyPhotos = async (req, res) => {
 
     // Update property with new photos
     const currentImages = property.images || [];
-    const updatedImages = [...currentImages, ...photoUrls];
+    const replaceImages = req.query.replace === 'true';
+    
+    let updatedImages;
+    if (replaceImages) {
+      // Replace all images with new ones
+      updatedImages = photoUrls;
+    } else {
+      // Append new photos to existing ones
+      updatedImages = [...currentImages, ...photoUrls];
+    }
     
     await property.update({ images: updatedImages });
 

@@ -21,6 +21,7 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
   const [error, setError] = useState('');
   const [photos, setPhotos] = useState([]);
   const [photoPreviews, setPhotoPreviews] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
 
   useEffect(() => {
     if (property) {
@@ -39,7 +40,8 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
         availableFrom: property.availableFrom ? property.availableFrom.split('T')[0] : '',
         availableTo: property.availableTo ? property.availableTo.split('T')[0] : ''
       });
-      setPhotoPreviews(property.images || []);
+      setExistingImages(property.images || []);
+      setPhotoPreviews([]);
     }
   }, [property]);
 
@@ -54,14 +56,25 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
     const files = Array.from(e.target.files);
     setPhotos(files);
     
-    // Create previews
-    const previews = files.map(file => URL.createObjectURL(file));
-    setPhotoPreviews([...photoPreviews, ...previews]);
+    // Create previews for new files
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    setPhotoPreviews([...photoPreviews, ...newPreviews]);
   };
 
   const removePhoto = (index) => {
-    const newPreviews = photoPreviews.filter((_, i) => i !== index);
-    setPhotoPreviews(newPreviews);
+    // Check if it's an existing image or a new preview
+    if (index < existingImages.length) {
+      // Remove from existing images
+      const newExisting = existingImages.filter((_, i) => i !== index);
+      setExistingImages(newExisting);
+    } else {
+      // Remove from new previews AND photos
+      const previewIndex = index - existingImages.length;
+      const newPreviews = photoPreviews.filter((_, i) => i !== previewIndex);
+      const newPhotos = photos.filter((_, i) => i !== previewIndex);
+      setPhotoPreviews(newPreviews);
+      setPhotos(newPhotos);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -86,18 +99,36 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
         maxGuests: parseInt(formData.maxGuests) || 1
       };
 
-      const response = await propertyService.updateProperty(property.id, propertyData);
-      if (response.success) {
-        // Upload new photos if any
-        if (photos.length > 0) {
-          try {
-            await propertyService.uploadPropertyPhotos(property.id, photos);
-          } catch (photoError) {
-            console.error('Photo upload error:', photoError);
-            // Don't fail the entire operation if photos fail
+      // Handle images: combine existing (after removal) with new photos
+      let finalImages = [...existingImages];
+      
+      if (photos.length > 0) {
+        // Upload new photos
+        try {
+          const uploadResponse = await propertyService.uploadPropertyPhotos(property.id, photos, false);
+          if (uploadResponse.success) {
+            // Combine existing images with new uploaded photos
+            finalImages = [...existingImages, ...uploadResponse.photos];
           }
+        } catch (photoError) {
+          console.error('Photo upload error:', photoError);
+          setError('Failed to upload photos. Please try again.');
+          setLoading(false);
+          return;
         }
+      }
+
+      // Update property with final images
+      const updatedPropertyData = {
+        ...propertyData,
+        images: finalImages
+      };
+
+      const response = await propertyService.updateProperty(property.id, updatedPropertyData);
+      if (response.success) {
         onPropertyUpdated();
+      } else {
+        setError(response.message || 'Failed to update property');
       }
     } catch (err) {
       console.error('Property update error:', err);
@@ -172,23 +203,48 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
                 <small className="text-muted">Upload additional photos (JPG, PNG, GIF)</small>
                 
                 {/* Photo Previews */}
-                {photoPreviews.length > 0 && (
+                {(existingImages.length > 0 || photoPreviews.length > 0) && (
                   <div className="mt-3">
                     <h6>Current Photos:</h6>
                     <div className="row">
+                      {/* Existing Images */}
+                      {existingImages.map((image, index) => (
+                        <div key={`existing-${index}`} className="col-md-3 mb-2">
+                          <div className="position-relative">
+                            <img
+                              src={image}
+                              alt={`Existing ${index + 1}`}
+                              className="img-thumbnail"
+                              style={{ width: '100%', height: '150px', objectFit: 'cover' }}
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                              }}
+                            />
+                            <button
+                              type="button"
+                              className="btn btn-danger btn-sm position-absolute top-0 end-0"
+                              onClick={() => removePhoto(index)}
+                              style={{ transform: 'translate(50%, -50%)' }}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      {/* New Photo Previews */}
                       {photoPreviews.map((preview, index) => (
-                        <div key={index} className="col-md-3 mb-2">
+                        <div key={`new-${index}`} className="col-md-3 mb-2">
                           <div className="position-relative">
                             <img
                               src={preview}
-                              alt={`Preview ${index + 1}`}
+                              alt={`New Preview ${index + 1}`}
                               className="img-thumbnail"
                               style={{ width: '100%', height: '150px', objectFit: 'cover' }}
                             />
                             <button
                               type="button"
                               className="btn btn-danger btn-sm position-absolute top-0 end-0"
-                              onClick={() => removePhoto(index)}
+                              onClick={() => removePhoto(existingImages.length + index)}
                               style={{ transform: 'translate(50%, -50%)' }}
                             >
                               ×

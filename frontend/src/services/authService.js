@@ -38,11 +38,12 @@ export const authService = {
   },
 
   // Upload profile picture
-  uploadProfilePicture: async (file) => {
+  uploadProfilePicture: async (file, userType = 'traveler') => {
     const formData = new FormData();
     formData.append('profilePicture', file);
     
-    const response = await api.post('/auth/upload-profile-picture', formData, {
+    const endpoint = userType === 'owner' ? '/owners/profile/picture' : '/travelers/profile/picture';
+    const response = await api.post(endpoint, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

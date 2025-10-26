@@ -6,7 +6,7 @@ import { favoriteService } from '../../services/favoriteService';
 import { useAuth } from '../../contexts/AuthContext';
 import AvailabilityCalendar from './AvailabilityCalendar';
 
-const PropertyDetails = () => {
+const PropertyDetails = ({ onFavoriteChange }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -25,7 +25,7 @@ const PropertyDetails = () => {
   // Get blocked dates from existing bookings
   const getBlockedDates = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/bookings/property/${id}/blocked-dates`);
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/bookings/property/${id}/blocked-dates`);
       const data = await response.json();
       
       if (data.success) {
@@ -77,9 +77,17 @@ const PropertyDetails = () => {
       if (isFavorited) {
         await favoriteService.removeFavorite(id);
         setIsFavorited(false);
+        // Notify parent component that favorite was removed
+        if (onFavoriteChange) {
+          onFavoriteChange(id, false);
+        }
       } else {
         await favoriteService.addFavorite(id);
         setIsFavorited(true);
+        // Notify parent component that favorite was added
+        if (onFavoriteChange) {
+          onFavoriteChange(id, true);
+        }
       }
     } catch (err) {
       setError('Failed to update favorite');

@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "root",
+    "password": "YOUR_DATABASE_PASSWORD",
+    "database": "airbnb_db",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false
+  },
+  "test": {
+    "username": "root",
+    "password": "YOUR_TEST_DATABASE_PASSWORD",
+    "database": "airbnb_db_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false
+  },
+  "production": {
+    "username": "root",
+    "password": "YOUR_PRODUCTION_DATABASE_PASSWORD",
+    "database": "airbnb_db_prod",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "logging": false
+  }
+}

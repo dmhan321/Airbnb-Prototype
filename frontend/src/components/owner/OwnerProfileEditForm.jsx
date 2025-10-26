@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { authService } from '../../services/authService';
+import { getImageUrl } from '../../utils/imageUtils';
 
 const OwnerProfileEditForm = ({ user, onUpdate, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -18,7 +19,7 @@ const OwnerProfileEditForm = ({ user, onUpdate, onCancel }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
-  const [profilePicturePreview, setProfilePicturePreview] = useState(user.profilePicture || '');
+  const [profilePicturePreview, setProfilePicturePreview] = useState(getImageUrl(user.profilePicture));
 
   // Update form data when user prop changes
   useEffect(() => {
@@ -35,7 +36,7 @@ const OwnerProfileEditForm = ({ user, onUpdate, onCancel }) => {
         languages: user.languages || '',
         gender: user.gender || ''
       });
-      setProfilePicturePreview(user.profilePicture || '');
+      setProfilePicturePreview(getImageUrl(user.profilePicture));
     }
   }, [user]);
 
@@ -122,9 +123,9 @@ const OwnerProfileEditForm = ({ user, onUpdate, onCancel }) => {
       // If there's a new profile picture, upload it first
       let profilePictureUrl = user.profilePicture;
       if (profilePicture) {
-        const uploadResponse = await authService.uploadProfilePicture(profilePicture);
+        const uploadResponse = await authService.uploadProfilePicture(profilePicture, 'owner');
         if (uploadResponse.success) {
-          profilePictureUrl = uploadResponse.url;
+          profilePictureUrl = uploadResponse.profilePicture;
         }
       }
 
