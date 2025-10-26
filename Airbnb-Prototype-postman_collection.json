@@ -1,0 +1,1023 @@
+{
+	"info": {
+		"_postman_id": "597e5ab9-6ac8-44a6-9f85-3c1c77197263",
+		"name": "Airbnb Prototype API",
+		"description": "Complete API collection for Airbnb Prototype Backend with AI Agent",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49383028",
+		"_collection_link": "https://elimsunyilin-6105963.postman.co/workspace/Yilin-Sun's-Workspace~5e26d316-21d3-4a89-8e5e-ce4d66af9229/collection/49383028-597e5ab9-6ac8-44a6-9f85-3c1c77197263?action=share&source=collection_link&creator=49383028"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register Traveler",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"city\": \"New York\",\n  \"country\": \"USA\",\n  \"languages\": \"English, Spanish\",\n  \"gender\": \"male\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register/traveler",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								"traveler"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Owner",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Jane Smith\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\",\n  \"location\": \"Los Angeles, CA\",\n  \"phone\": \"+1234567891\",\n  \"aboutMe\": \"Experienced property owner\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register/owner",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								"owner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Traveler",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\",\n  \"userType\": \"traveler\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Owner",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"userType\": \"owner\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AI Agent",
+			"item": [
+				{
+					"name": "Agent Chat (Backend)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"What are the best restaurants in Paris?\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/agent",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"agent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agent Button (FastAPI)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"traveler_id\": 1,\n  \"mode\": \"packing\",\n  \"about_me\": \"I love outdoor activities and adventure sports\",\n  \"city\": \"San Francisco\"\n}"
+						},
+						"url": {
+							"raw": "{{agentUrl}}/agent-button",
+							"host": [
+								"{{agentUrl}}"
+							],
+							"path": [
+								"agent-button"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agent Restaurant Recommendations",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"traveler_id\": 1,\n  \"mode\": \"restaurant\",\n  \"about_me\": \"I'm a vegetarian who loves spicy food\",\n  \"city\": \"San Francisco\"\n}"
+						},
+						"url": {
+							"raw": "{{agentUrl}}/agent-button",
+							"host": [
+								"{{agentUrl}}"
+							],
+							"path": [
+								"agent-button"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agent Packing Suggestions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"traveler_id\": 1,\n  \"mode\": \"packing\",\n  \"about_me\": \"I'm traveling for business meetings\",\n  \"city\": \"London\"\n}"
+						},
+						"url": {
+							"raw": "{{agentUrl}}/agent-button",
+							"host": [
+								"{{agentUrl}}"
+							],
+							"path": [
+								"agent-button"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agent Activity Recommendation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"traveler_id\": 1,\n  \"mode\": \"activity\",\n  \"about_me\": \"I like the outdoors\",\n  \"city\": \"San Jose\"\n}"
+						},
+						"url": {
+							"raw": "{{agentUrl}}/agent-button",
+							"host": [
+								"{{agentUrl}}"
+							],
+							"path": [
+								"agent-button"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agent Itinerary",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"traveler_id\": 1,\n  \"mode\": \"itinerary\",\n  \"about_me\": \"I'm in San Jose for one day\",\n  \"city\": \"San Jose\"\n}"
+						},
+						"url": {
+							"raw": "{{agentUrl}}/agent-button",
+							"host": [
+								"{{agentUrl}}"
+							],
+							"path": [
+								"agent-button"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Properties (Public)",
+			"item": [
+				{
+					"name": "Get All Properties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/properties?page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"properties"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Properties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/properties/search?location=Miami",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"properties",
+								"search"
+							],
+							"query": [
+								{
+									"key": "location",
+									"value": "Miami"
+								},
+								{
+									"key": "guests",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "minPrice",
+									"value": "50",
+									"disabled": true
+								},
+								{
+									"key": "maxPrice",
+									"value": "200",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Property by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/properties/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"properties",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Property Blocked Dates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/bookings/property/1/blocked-dates",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings",
+								"property",
+								"1",
+								"blocked-dates"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Traveler Routes",
+			"item": [
+				{
+					"name": "Get Traveler Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/travelers/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"travelers",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Traveler Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Updated\",\n  \"email\": \"john.updated@example.com\",\n  \"phone\": \"+1234567890\",\n  \"aboutMe\": \"Updated about me\",\n  \"address\": \"123 Main St Apt 5\",\n  \"city\": \"San Francisco\",\n  \"state\": \"CA\",\n  \"country\": \"USA\",\n  \"languages\": \"English, Spanish\",\n  \"gender\": \"male\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/travelers/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"travelers",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Traveler Profile Picture",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/travelers/profile/picture",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"travelers",
+								"profile",
+								"picture"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Properties (Traveler)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/travelers/properties/search?location=Paris&guests=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"travelers",
+								"properties",
+								"search"
+							],
+							"query": [
+								{
+									"key": "location",
+									"value": "Paris"
+								},
+								{
+									"key": "guests",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Property Details (Traveler)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/travelers/properties/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"travelers",
+								"properties",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Owner Routes",
+			"item": [
+				{
+					"name": "Get Owner Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/owners/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"owners",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Owner Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Jane Updated\",\n  \"email\": \"jane.updated@example.com\",\n  \"phone\": \"+1234567891\",\n  \"aboutMe\": \"Updated about me\",\n  \"address\": \"456 Market St Suite 200\",\n  \"city\": \"San Francisco\",\n  \"state\": \"CA\",\n  \"country\": \"USA\",\n  \"languages\": \"English, Mandarin\",\n  \"gender\": \"female\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/owners/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"owners",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Owner Profile Picture",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/owners/profile/picture",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"owners",
+								"profile",
+								"picture"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Owner Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/owners/dashboard",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"owners",
+								"dashboard"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Property Management (Owner)",
+			"item": [
+				{
+					"name": "Create Property",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Beautiful Apartment in NYC\",\n  \"type\": \"Apartment\",\n  \"description\": \"Luxurious apartment in Manhattan\",\n  \"location\": \"123 Main St, New York, NY\",\n  \"city\": \"New York\",\n  \"state\": \"NY\",\n  \"country\": \"USA\",\n  \"price\": 150.00,\n  \"bedrooms\": 2,\n  \"bathrooms\": 1,\n  \"amenities\": \"WiFi, Kitchen, Parking\",\n  \"maxGuests\": 4,\n  \"availableFrom\": \"2024-01-01\",\n  \"availableTo\": \"2024-12-31\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/properties",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Property Photos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photos",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/properties/2/photos",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"properties",
+								"2",
+								"photos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Property Photos (Replace)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photos",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/properties/1/photos?replace=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"properties",
+								"1",
+								"photos"
+							],
+							"query": [
+								{
+									"key": "replace",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Owner Properties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/properties/owner/properties",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"properties",
+								"owner",
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Property",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Property Name\",\n  \"price\": 200.00,\n  \"description\": \"Updated description\",\n  \"images\": [\"http://localhost:5000/uploads/property-photos/photo1.jpg\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/properties/7",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"properties",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Property",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/properties/7",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"properties",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Create Booking (Traveler)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"propertyId\": 6,\n  \"startDate\": \"2024-02-01\",\n  \"endDate\": \"2024-02-05\",\n  \"guests\": 2\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/bookings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Traveler Bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/bookings/traveler",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings",
+								"traveler"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Owner Bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/bookings/owner",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings",
+								"owner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Booking (Owner)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/bookings/5/accept",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings",
+								"5",
+								"accept"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Booking",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/bookings/5/cancel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"bookings",
+								"5",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Favorites",
+			"item": [
+				{
+					"name": "Add to Favorites",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"propertyId\": 6\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/favorites",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"favorites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Favorites",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/favorites",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"favorites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check if Property is Favorited",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/favorites/check/5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"favorites",
+								"check",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove from Favorites",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/favorites/5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"favorites",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000/api",
+			"type": "string"
+		},
+		{
+			"key": "agentUrl",
+			"value": "http://localhost:5005",
+			"type": "string"
+		},
+		{
+			"key": "sessionCookie",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
