@@ -1,0 +1,233 @@
+.auth-page {
+  min-height: 100vh;
+  background: var(--background, #FFFFFF);
+}
+
+.auth-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 80px);
+}
+
+/* Left Side - Image/Branding */
+.auth-left {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  color: white;
+}
+
+.auth-left-content {
+  max-width: 500px;
+  text-align: center;
+}
+
+.auth-welcome-title {
+  font-size: 48px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.auth-welcome-subtitle {
+  font-size: 20px;
+  margin-bottom: 48px;
+  opacity: 0.9;
+}
+
+.auth-image-placeholder {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Right Side - Form */
+.auth-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  background: var(--background, #FFFFFF);
+}
+
+.auth-form-container {
+  width: 100%;
+  max-width: 440px;
+}
+
+.auth-form-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.auth-form-header h2 {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin-bottom: 8px;
+}
+
+.auth-form-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary, #717171);
+  margin: 0;
+}
+
+/* Error Message */
+.auth-error-message {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  color: var(--error, #C13515);
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+/* Form */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+}
+
+.auth-input {
+  border: 1px solid var(--border, #DDDDDD);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 16px;
+  color: var(--text-primary, #222222);
+  transition: all 0.2s ease;
+  background: white;
+  width: 100%;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--airbnb-red, #FF385C);
+  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.1);
+}
+
+.auth-input::placeholder {
+  color: var(--text-secondary, #717171);
+}
+
+.auth-input.error {
+  border-color: var(--error, #C13515);
+  animation: shake 0.5s ease-in-out;
+}
+
+.auth-field-error {
+  font-size: 12px;
+  color: var(--error, #C13515);
+  margin-top: -4px;
+}
+
+.auth-hint {
+  font-size: 12px;
+  color: var(--text-secondary, #717171);
+  margin-top: -4px;
+}
+
+/* Submit Button */
+.auth-submit-btn {
+  width: 100%;
+  background: var(--airbnb-red, #FF385C);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+  background: #E61E4D;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.4);
+}
+
+.auth-submit-btn:disabled {
+  background: var(--border, #DDDDDD);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Footer */
+.auth-form-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border, #DDDDDD);
+}
+
+.auth-form-footer p {
+  font-size: 14px;
+  color: var(--text-secondary, #717171);
+  margin: 0;
+}
+
+.auth-link {
+  color: var(--airbnb-red, #FF385C);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.auth-link:hover {
+  color: #E61E4D;
+  text-decoration: underline;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .auth-container {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-left {
+    display: none;
+  }
+
+  .auth-right {
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-welcome-title {
+    font-size: 36px;
+  }
+
+  .auth-form-header h2 {
+    font-size: 28px;
+  }
+
+  .auth-form-container {
+    max-width: 100%;
+  }
+}
+
+
+

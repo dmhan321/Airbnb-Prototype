@@ -1,9 +1,11 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAppSelector } from '../../store/hooks';
 
 const ProtectedRoute = ({ children, requiredUserType = null }) => {
-  const { user, userType, loading } = useAuth();
+  const { user, loading, isAuthenticated } = useAppSelector((state) => state.auth);
+  const userType = user?.userType || null;
+  const token = localStorage.getItem('token');
 
   if (loading) {
     return (
@@ -15,7 +17,9 @@ const ProtectedRoute = ({ children, requiredUserType = null }) => {
     );
   }
 
-  if (!user) {
+  // Only redirect if there's no token in localStorage (truly logged out)
+  // Don't redirect if user is temporarily null during profile updates
+  if (!user && !token) {
     return <Navigate to="/login" replace />;
   }
 

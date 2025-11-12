@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { propertyService } from '../../services/propertyService';
+import { getImageUrl } from '../../utils/imageUtils';
+import './PropertyForm.css';
 
 const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -8,6 +10,7 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
     description: '',
     location: '',
     city: '',
+    state: '',
     country: '',
     price: '',
     bedrooms: '',
@@ -17,20 +20,75 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
     availableFrom: '',
     availableTo: ''
   });
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [photos, setPhotos] = useState([]);
   const [photoPreviews, setPhotoPreviews] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
 
+  // US State abbreviations
+  const usStates = [
+    { value: '', label: 'Select State' },
+    { value: 'AL', label: 'AL' }, { value: 'AK', label: 'AK' }, { value: 'AZ', label: 'AZ' },
+    { value: 'AR', label: 'AR' }, { value: 'CA', label: 'CA' }, { value: 'CO', label: 'CO' },
+    { value: 'CT', label: 'CT' }, { value: 'DE', label: 'DE' }, { value: 'FL', label: 'FL' },
+    { value: 'GA', label: 'GA' }, { value: 'HI', label: 'HI' }, { value: 'ID', label: 'ID' },
+    { value: 'IL', label: 'IL' }, { value: 'IN', label: 'IN' }, { value: 'IA', label: 'IA' },
+    { value: 'KS', label: 'KS' }, { value: 'KY', label: 'KY' }, { value: 'LA', label: 'LA' },
+    { value: 'ME', label: 'ME' }, { value: 'MD', label: 'MD' }, { value: 'MA', label: 'MA' },
+    { value: 'MI', label: 'MI' }, { value: 'MN', label: 'MN' }, { value: 'MS', label: 'MS' },
+    { value: 'MO', label: 'MO' }, { value: 'MT', label: 'MT' }, { value: 'NE', label: 'NE' },
+    { value: 'NV', label: 'NV' }, { value: 'NH', label: 'NH' }, { value: 'NJ', label: 'NJ' },
+    { value: 'NM', label: 'NM' }, { value: 'NY', label: 'NY' }, { value: 'NC', label: 'NC' },
+    { value: 'ND', label: 'ND' }, { value: 'OH', label: 'OH' }, { value: 'OK', label: 'OK' },
+    { value: 'OR', label: 'OR' }, { value: 'PA', label: 'PA' }, { value: 'RI', label: 'RI' },
+    { value: 'SC', label: 'SC' }, { value: 'SD', label: 'SD' }, { value: 'TN', label: 'TN' },
+    { value: 'TX', label: 'TX' }, { value: 'UT', label: 'UT' }, { value: 'VT', label: 'VT' },
+    { value: 'VA', label: 'VA' }, { value: 'WA', label: 'WA' }, { value: 'WV', label: 'WV' },
+    { value: 'WI', label: 'WI' }, { value: 'WY', label: 'WY' }
+  ];
+
+  // Common amenities
+  const availableAmenities = [
+    'WiFi', 'Air Conditioning', 'Heating', 'Kitchen', 'Washer', 'Dryer', 
+    'Parking', 'Pool', 'Hot Tub', 'Gym', 'TV', 'Workspace', 
+    'Fireplace', 'Balcony', 'Garden', 'Pet Friendly', 'Smoking Allowed',
+    'Wheelchair Accessible', 'Elevator', 'Security System'
+  ];
+
+  // Countries list
+  const countries = [
+    'United States', 'Canada', 'United Kingdom', 'France', 'Germany', 'Italy', 'Spain',
+    'Australia', 'Japan', 'China', 'India', 'Brazil', 'Mexico', 'Argentina', 'South Africa',
+    'Egypt', 'Nigeria', 'Kenya', 'Morocco', 'Turkey', 'Russia', 'Ukraine', 'Poland',
+    'Netherlands', 'Belgium', 'Switzerland', 'Austria', 'Sweden', 'Norway', 'Denmark',
+    'Finland', 'Ireland', 'Portugal', 'Greece', 'Croatia', 'Czech Republic', 'Hungary',
+    'Romania', 'Bulgaria', 'Slovakia', 'Slovenia', 'Estonia', 'Latvia', 'Lithuania'
+  ];
+
+  const toggleAmenity = (amenity) => {
+    setSelectedAmenities(prev => {
+      if (prev.includes(amenity)) {
+        return prev.filter(a => a !== amenity);
+      } else {
+        return [...prev, amenity];
+      }
+    });
+  };
+
+  // Track the property ID to prevent unnecessary resets
+  const propertyId = property?._id || property?.id;
+  
   useEffect(() => {
-    if (property) {
+    if (property && propertyId) {
       setFormData({
         name: property.name || '',
         type: property.type || 'apartment',
         description: property.description || '',
         location: property.location || '',
         city: property.city || '',
+        state: property.state || '',
         country: property.country || '',
         price: property.price || '',
         bedrooms: property.bedrooms || '',
@@ -42,8 +100,19 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
       });
       setExistingImages(property.images || []);
       setPhotoPreviews([]);
+      
+      // Initialize selected amenities from existing amenities
+      if (property.amenities) {
+        const amenitiesList = typeof property.amenities === 'string'
+          ? property.amenities.split(',').map(a => a.trim()).filter(a => a)
+          : Array.isArray(property.amenities) ? property.amenities : [];
+        setSelectedAmenities(amenitiesList);
+      } else {
+        setSelectedAmenities([]);
+      }
     }
-  }, [property]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [propertyId]); // Only depend on property ID, not the entire object
 
   const handleChange = (e) => {
     setFormData({
@@ -54,11 +123,14 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
 
   const handlePhotoChange = (e) => {
     const files = Array.from(e.target.files);
-    setPhotos(files);
+    if (files.length === 0) return;
     
-    // Create previews for new files
+    // Append new files to existing ones (allow multiple selections)
+    setPhotos(prevPhotos => [...prevPhotos, ...files]);
+    
+    // Create previews for new files and append to existing
     const newPreviews = files.map(file => URL.createObjectURL(file));
-    setPhotoPreviews([...photoPreviews, ...newPreviews]);
+    setPhotoPreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
   };
 
   const removePhoto = (index) => {
@@ -83,6 +155,22 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
     setError('');
 
     try {
+      // Validate property exists
+      if (!property) {
+        setError('Property data is missing. Please refresh and try again.');
+        setLoading(false);
+        return;
+      }
+
+      // Get property ID (handle both MongoDB _id and regular id)
+      const propertyId = property._id || property.id;
+      
+      if (!propertyId) {
+        setError('Property ID is missing. Please refresh and try again.');
+        setLoading(false);
+        return;
+      }
+
       // Validate required fields
       if (!formData.name || !formData.location || !formData.city || !formData.country) {
         setError('Please fill in all required fields');
@@ -90,9 +178,13 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
         return;
       }
 
+      // Convert selected amenities array to comma-separated string
+      const amenitiesString = selectedAmenities.join(', ');
+
       // Convert string values to appropriate types
       const propertyData = {
         ...formData,
+        amenities: amenitiesString,
         price: parseFloat(formData.price) || 0,
         bedrooms: parseInt(formData.bedrooms) || 0,
         bathrooms: parseInt(formData.bathrooms) || 0,
@@ -105,14 +197,13 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
       if (photos.length > 0) {
         // Upload new photos
         try {
-          const uploadResponse = await propertyService.uploadPropertyPhotos(property.id, photos, false);
+          const uploadResponse = await propertyService.uploadPropertyPhotos(propertyId, photos, false);
           if (uploadResponse.success) {
             // Combine existing images with new uploaded photos
             finalImages = [...existingImages, ...uploadResponse.photos];
           }
         } catch (photoError) {
-          console.error('Photo upload error:', photoError);
-          setError('Failed to upload photos. Please try again.');
+          setError(photoError.response?.data?.message || 'Failed to upload photos. Please try again.');
           setLoading(false);
           return;
         }
@@ -124,16 +215,18 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
         images: finalImages
       };
 
-      const response = await propertyService.updateProperty(property.id, updatedPropertyData);
+      const response = await propertyService.updateProperty(propertyId, updatedPropertyData);
       if (response.success) {
+        // Call the callback to close the form and reload properties
         onPropertyUpdated();
       } else {
         setError(response.message || 'Failed to update property');
+        setLoading(false);
       }
     } catch (err) {
       console.error('Property update error:', err);
-      setError(err.response?.data?.message || 'Failed to update property');
-    } finally {
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to update property';
+      setError(errorMessage);
       setLoading(false);
     }
   };
@@ -212,7 +305,7 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
                         <div key={`existing-${index}`} className="col-md-3 mb-2">
                           <div className="position-relative">
                             <img
-                              src={image}
+                              src={getImageUrl(image)}
                               alt={`Existing ${index + 1}`}
                               className="img-thumbnail"
                               style={{ width: '100%', height: '150px', objectFit: 'cover' }}
@@ -271,7 +364,7 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
               </div>
 
               <div className="row">
-                <div className="col-md-6 mb-3">
+                <div className="col-md-4 mb-3">
                   <label className="form-label">City</label>
                   <input
                     type="text"
@@ -282,16 +375,35 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
                     required
                   />
                 </div>
-                <div className="col-md-6 mb-3">
+                <div className="col-md-4 mb-3">
+                  <label className="form-label">State</label>
+                  <select
+                    className="form-select"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                  >
+                    {usStates.map(state => (
+                      <option key={state.value} value={state.value}>
+                        {state.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col-md-4 mb-3">
                   <label className="form-label">Country</label>
-                  <input
-                    type="text"
-                    className="form-control"
+                  <select
+                    className="form-select"
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
                     required
-                  />
+                  >
+                    <option value="">Select Country</option>
+                    {countries.map(country => (
+                      <option key={country} value={country}>{country}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -343,17 +455,28 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
                     required
                   />
                 </div>
-                <div className="col-md-6 mb-3">
-                  <label className="form-label">Amenities (comma separated)</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="amenities"
-                    value={formData.amenities}
-                    onChange={handleChange}
-                    placeholder="WiFi, Pool, Parking, etc."
-                  />
+              </div>
+
+              {/* Amenities Section */}
+              <div className="mb-3">
+                <label className="form-label">Amenities</label>
+                <div className="amenities-buttons-container">
+                  {availableAmenities.map(amenity => (
+                    <button
+                      key={amenity}
+                      type="button"
+                      className={`amenity-button ${selectedAmenities.includes(amenity) ? 'selected' : ''}`}
+                      onClick={() => toggleAmenity(amenity)}
+                    >
+                      {amenity}
+                    </button>
+                  ))}
                 </div>
+                {selectedAmenities.length > 0 && (
+                  <small className="text-muted d-block mt-2">
+                    Selected: {selectedAmenities.join(', ')}
+                  </small>
+                )}
               </div>
 
               {/* Availability Section */}

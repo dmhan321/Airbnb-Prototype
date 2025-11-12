@@ -2,10 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Airbnb Prototype Backend API",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start:services": "node start-all-services.js",
+    "install:services": "cd services/traveler-service && npm install && cd ../owner-service && npm install && cd ../property-service && npm install && cd ../booking-service && npm install",
+    "clear-db": "node scripts/clear-database.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -19,16 +19,16 @@
   "dependencies": {
     "axios": "^1.12.2",
     "bcryptjs": "^2.4.3",
+    "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
-    "joi": "^17.11.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
     "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.15.1",
-    "openai": "^6.6.0",
-    "sequelize": "^6.37.7",
-    "sequelize-cli": "^6.6.3"
+    "openai": "^6.6.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

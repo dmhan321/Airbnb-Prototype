@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { propertyService } from '../../services/propertyService';
+import './PropertyForm.css';
 
 const PropertyForm = ({ onPropertyCreated }) => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ const PropertyForm = ({ onPropertyCreated }) => {
     description: '',
     location: '',
     city: '',
+    state: '',
     country: '',
     price: '',
     bedrooms: '',
@@ -17,10 +19,61 @@ const PropertyForm = ({ onPropertyCreated }) => {
     availableFrom: '',
     availableTo: ''
   });
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [photos, setPhotos] = useState([]);
   const [photoPreviews, setPhotoPreviews] = useState([]);
+
+  // US State abbreviations only
+  const usStates = [
+    { value: '', label: 'Select State' },
+    { value: 'AL', label: 'AL' }, { value: 'AK', label: 'AK' }, { value: 'AZ', label: 'AZ' },
+    { value: 'AR', label: 'AR' }, { value: 'CA', label: 'CA' }, { value: 'CO', label: 'CO' },
+    { value: 'CT', label: 'CT' }, { value: 'DE', label: 'DE' }, { value: 'FL', label: 'FL' },
+    { value: 'GA', label: 'GA' }, { value: 'HI', label: 'HI' }, { value: 'ID', label: 'ID' },
+    { value: 'IL', label: 'IL' }, { value: 'IN', label: 'IN' }, { value: 'IA', label: 'IA' },
+    { value: 'KS', label: 'KS' }, { value: 'KY', label: 'KY' }, { value: 'LA', label: 'LA' },
+    { value: 'ME', label: 'ME' }, { value: 'MD', label: 'MD' }, { value: 'MA', label: 'MA' },
+    { value: 'MI', label: 'MI' }, { value: 'MN', label: 'MN' }, { value: 'MS', label: 'MS' },
+    { value: 'MO', label: 'MO' }, { value: 'MT', label: 'MT' }, { value: 'NE', label: 'NE' },
+    { value: 'NV', label: 'NV' }, { value: 'NH', label: 'NH' }, { value: 'NJ', label: 'NJ' },
+    { value: 'NM', label: 'NM' }, { value: 'NY', label: 'NY' }, { value: 'NC', label: 'NC' },
+    { value: 'ND', label: 'ND' }, { value: 'OH', label: 'OH' }, { value: 'OK', label: 'OK' },
+    { value: 'OR', label: 'OR' }, { value: 'PA', label: 'PA' }, { value: 'RI', label: 'RI' },
+    { value: 'SC', label: 'SC' }, { value: 'SD', label: 'SD' }, { value: 'TN', label: 'TN' },
+    { value: 'TX', label: 'TX' }, { value: 'UT', label: 'UT' }, { value: 'VT', label: 'VT' },
+    { value: 'VA', label: 'VA' }, { value: 'WA', label: 'WA' }, { value: 'WV', label: 'WV' },
+    { value: 'WI', label: 'WI' }, { value: 'WY', label: 'WY' }
+  ];
+
+  // Common amenities
+  const availableAmenities = [
+    'WiFi', 'Air Conditioning', 'Heating', 'Kitchen', 'Washer', 'Dryer', 
+    'Parking', 'Pool', 'Hot Tub', 'Gym', 'TV', 'Workspace', 
+    'Fireplace', 'Balcony', 'Garden', 'Pet Friendly', 'Smoking Allowed',
+    'Wheelchair Accessible', 'Elevator', 'Security System'
+  ];
+
+  // Countries list
+  const countries = [
+    'United States', 'Canada', 'United Kingdom', 'France', 'Germany', 'Italy', 'Spain',
+    'Australia', 'Japan', 'China', 'India', 'Brazil', 'Mexico', 'Argentina', 'South Africa',
+    'Egypt', 'Nigeria', 'Kenya', 'Morocco', 'Turkey', 'Russia', 'Ukraine', 'Poland',
+    'Netherlands', 'Belgium', 'Switzerland', 'Austria', 'Sweden', 'Norway', 'Denmark',
+    'Finland', 'Ireland', 'Portugal', 'Greece', 'Croatia', 'Czech Republic', 'Hungary',
+    'Romania', 'Bulgaria', 'Slovakia', 'Slovenia', 'Estonia', 'Latvia', 'Lithuania'
+  ];
+
+  const toggleAmenity = (amenity) => {
+    setSelectedAmenities(prev => {
+      if (prev.includes(amenity)) {
+        return prev.filter(a => a !== amenity);
+      } else {
+        return [...prev, amenity];
+      }
+    });
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -31,11 +84,14 @@ const PropertyForm = ({ onPropertyCreated }) => {
 
   const handlePhotoChange = (e) => {
     const files = Array.from(e.target.files);
-    setPhotos(files);
+    if (files.length === 0) return;
     
-    // Create previews
-    const previews = files.map(file => URL.createObjectURL(file));
-    setPhotoPreviews(previews);
+    // Append new files to existing ones (allow multiple selections)
+    setPhotos(prevPhotos => [...prevPhotos, ...files]);
+    
+    // Create previews for new files and append to existing
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    setPhotoPreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
   };
 
   const removePhoto = (index) => {
@@ -58,9 +114,13 @@ const PropertyForm = ({ onPropertyCreated }) => {
         return;
       }
 
+      // Convert selected amenities array to comma-separated string
+      const amenitiesString = selectedAmenities.join(', ');
+
       // Convert string values to appropriate types
       const propertyData = {
         ...formData,
+        amenities: amenitiesString,
         price: parseFloat(formData.price) || 0,
         bedrooms: parseInt(formData.bedrooms) || 0,
         bathrooms: parseInt(formData.bathrooms) || 0,
@@ -73,16 +133,15 @@ const PropertyForm = ({ onPropertyCreated }) => {
         // Upload photos if any
         if (photos.length > 0) {
           try {
-            await propertyService.uploadPropertyPhotos(response.property.id, photos);
+            const propertyId = response.property.id || response.property._id;
+            await propertyService.uploadPropertyPhotos(propertyId, photos);
           } catch (photoError) {
-            console.error('Photo upload error:', photoError);
             // Don't fail the entire operation if photos fail
           }
         }
         onPropertyCreated();
       }
     } catch (err) {
-      console.error('Property creation error:', err);
       setError(err.response?.data?.message || 'Failed to create property');
       if (err.response?.data?.errors) {
         setError(err.response.data.errors.join(', '));
@@ -154,7 +213,10 @@ const PropertyForm = ({ onPropertyCreated }) => {
                   multiple
                   onChange={handlePhotoChange}
                 />
-                <small className="text-muted">Upload multiple photos of your property (JPG, PNG, GIF)</small>
+                <small className="text-muted">
+                  Select multiple photos at once (hold Ctrl/Cmd to select multiple). 
+                  You can add more photos by selecting again. Maximum 10 photos total. (JPG, PNG, GIF)
+                </small>
                 
                 {/* Photo Previews */}
                 {photoPreviews.length > 0 && (
@@ -200,7 +262,7 @@ const PropertyForm = ({ onPropertyCreated }) => {
               </div>
 
               <div className="row">
-                <div className="col-md-6 mb-3">
+                <div className="col-md-4 mb-3">
                   <label className="form-label">City</label>
                   <input
                     type="text"
@@ -211,16 +273,35 @@ const PropertyForm = ({ onPropertyCreated }) => {
                     required
                   />
                 </div>
-                <div className="col-md-6 mb-3">
+                <div className="col-md-4 mb-3">
+                  <label className="form-label">State</label>
+                  <select
+                    className="form-select"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                  >
+                    {usStates.map(state => (
+                      <option key={state.value} value={state.value}>
+                        {state.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col-md-4 mb-3">
                   <label className="form-label">Country</label>
-                  <input
-                    type="text"
-                    className="form-control"
+                  <select
+                    className="form-select"
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
                     required
-                  />
+                  >
+                    <option value="">Select Country</option>
+                    {countries.map(country => (
+                      <option key={country} value={country}>{country}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -272,17 +353,28 @@ const PropertyForm = ({ onPropertyCreated }) => {
                     required
                   />
                 </div>
-                <div className="col-md-6 mb-3">
-                  <label className="form-label">Amenities (comma separated)</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="amenities"
-                    value={formData.amenities}
-                    onChange={handleChange}
-                    placeholder="WiFi, Pool, Parking, etc."
-                  />
+              </div>
+
+              {/* Amenities Section */}
+              <div className="mb-3">
+                <label className="form-label">Amenities</label>
+                <div className="amenities-buttons-container">
+                  {availableAmenities.map(amenity => (
+                    <button
+                      key={amenity}
+                      type="button"
+                      className={`amenity-button ${selectedAmenities.includes(amenity) ? 'selected' : ''}`}
+                      onClick={() => toggleAmenity(amenity)}
+                    >
+                      {amenity}
+                    </button>
+                  ))}
                 </div>
+                {selectedAmenities.length > 0 && (
+                  <small className="text-muted d-block mt-2">
+                    Selected: {selectedAmenities.join(', ')}
+                  </small>
+                )}
               </div>
 
               {/* Availability Section */}

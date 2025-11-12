@@ -1,0 +1,180 @@
+.booking-widget {
+  position: sticky;
+  top: 100px;
+  width: 100%;
+}
+
+.booking-widget-content {
+  background: white;
+  border: 1px solid var(--border, #DDDDDD);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Price Display */
+.booking-price {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border, #DDDDDD);
+}
+
+.booking-price-amount {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+}
+
+.booking-price-label {
+  font-size: 16px;
+  color: var(--text-secondary, #717171);
+  margin-left: 4px;
+}
+
+/* Booking Form */
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.booking-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.booking-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+}
+
+/* Guest Selector */
+.booking-guests {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border, #DDDDDD);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.booking-guests-btn {
+  background: white;
+  border: none;
+  padding: 12px 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-width: 48px;
+}
+
+.booking-guests-btn:hover:not(:disabled) {
+  background: var(--background-light, #F7F7F7);
+}
+
+.booking-guests-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.booking-guests-input {
+  flex: 1;
+  border: none;
+  border-left: 1px solid var(--border, #DDDDDD);
+  border-right: 1px solid var(--border, #DDDDDD);
+  padding: 12px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  outline: none;
+}
+
+.booking-guests-input::-webkit-inner-spin-button,
+.booking-guests-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Reserve Button */
+.booking-reserve-btn {
+  width: 100%;
+  background: var(--airbnb-red, #FF385C);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.booking-reserve-btn:hover:not(:disabled) {
+  background: #E61E4D;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.4);
+}
+
+.booking-reserve-btn:disabled {
+  background: var(--border, #DDDDDD);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Error Message */
+.booking-error {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  color: var(--error, #C13515);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Price Breakdown */
+.booking-breakdown {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border, #DDDDDD);
+}
+
+.booking-breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--text-primary, #222222);
+  text-decoration: underline;
+}
+
+.booking-breakdown-total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border, #DDDDDD);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .booking-widget {
+    position: relative;
+    top: 0;
+    margin-top: 24px;
+  }
+
+  .booking-widget-content {
+    padding: 20px;
+  }
+}
+
+
+

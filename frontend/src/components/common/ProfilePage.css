@@ -1,0 +1,49 @@
+/* Shared Profile Page Styles - Used by both Traveler and Owner Profile Pages */
+
+.profile-page {
+  min-height: 100vh;
+  background: var(--background, #FFFFFF);
+  padding-top: 50px; /* Match header height */
+}
+
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 20px;
+}
+
+.profile-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin-bottom: 16px;
+}
+
+.profile-view-section,
+.profile-edit-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 0; /* ModernProfileView handles its own padding */
+}
+
+.profile-edit-section {
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 16px 16px;
+  }
+
+  .profile-title {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .profile-view-section,
+  .profile-edit-section {
+    padding: 0;
+  }
+}
+

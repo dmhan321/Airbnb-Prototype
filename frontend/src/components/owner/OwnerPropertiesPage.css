@@ -1,0 +1,373 @@
+.owner-properties-page {
+  min-height: 100vh;
+  background: var(--background, #FFFFFF);
+  padding-top: 50px; /* Match header height */
+}
+
+.properties-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.properties-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.properties-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin: 0;
+}
+
+.properties-create-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--airbnb-red, #FF385C);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.properties-create-button:hover {
+  background: #E61E4D;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+}
+
+.properties-create-icon {
+  font-size: 20px;
+}
+
+.properties-back-button {
+  background: white;
+  border: 1px solid var(--border, #DDDDDD);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary, #222222);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.properties-back-button:hover {
+  border-color: var(--text-primary, #222222);
+  background: var(--background-light, #F7F7F7);
+}
+
+/* Properties Grid */
+.properties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 40px 24px;
+  margin-top: 24px;
+}
+
+@media (max-width: 1024px) {
+  .properties-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 32px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .properties-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* Property Card */
+.property-card {
+  background: white;
+  border: 1px solid var(--border, #DDDDDD);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-card.clickable {
+  cursor: pointer;
+}
+
+.property-card.clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.property-card-image-container {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  background: var(--background-light, #F7F7F7);
+}
+
+.property-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.property-card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, #717171);
+  background: var(--background-light, #F7F7F7);
+}
+
+.property-card-price-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.property-card-price-amount {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.property-card-price-label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.property-card-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-card-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin: 0 0 8px 0;
+}
+
+.property-card-location {
+  font-size: 14px;
+  color: var(--text-secondary, #717171);
+  margin: 0 0 12px 0;
+}
+
+.property-card-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--text-secondary, #717171);
+}
+
+.property-card-detail-item {
+  display: flex;
+  align-items: center;
+}
+
+.property-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  flex-wrap: wrap;
+  pointer-events: auto; /* Ensure buttons are clickable */
+}
+
+.property-card-action-btn {
+  flex: 1;
+  min-width: 80px;
+  padding: 8px 16px;
+  border: 1px solid var(--border, #DDDDDD);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+  color: var(--text-primary, #222222);
+}
+
+.property-card-action-btn:hover:not(:disabled) {
+  border-color: var(--text-primary, #222222);
+  background: var(--background-light, #F7F7F7);
+}
+
+.property-card-action-btn.edit {
+  border-color: var(--airbnb-red, #FF385C);
+  color: var(--airbnb-red, #FF385C);
+}
+
+.property-card-action-btn.edit:hover {
+  background: var(--airbnb-red, #FF385C);
+  color: white;
+}
+
+.property-card-action-btn.delete {
+  border-color: #C13515;
+  color: #C13515;
+}
+
+.property-card-action-btn.delete:hover:not(:disabled) {
+  background: #C13515;
+  color: white;
+}
+
+.property-card-action-btn.view-bookings {
+  border-color: var(--text-primary, #222222);
+  color: var(--text-primary, #222222);
+}
+
+.property-card-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Loading State */
+.properties-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+}
+
+.properties-loading p {
+  color: var(--text-secondary, #717171);
+}
+
+/* Error State */
+.properties-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  gap: 16px;
+}
+
+.error-icon {
+  font-size: 48px;
+}
+
+.properties-error h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin: 0;
+}
+
+.properties-error p {
+  color: var(--text-secondary, #717171);
+  margin: 0;
+}
+
+.btn-retry {
+  background: var(--airbnb-red, #FF385C);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-retry:hover {
+  background: #E61E4D;
+}
+
+/* Empty State */
+.properties-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  gap: 16px;
+}
+
+.empty-icon {
+  font-size: 64px;
+}
+
+.properties-empty-state h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin: 0;
+}
+
+.properties-empty-state p {
+  color: var(--text-secondary, #717171);
+  margin: 0;
+}
+
+.btn-explore {
+  background: var(--airbnb-red, #FF385C);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.btn-explore:hover {
+  background: #E61E4D;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
+}
+
+@media (max-width: 768px) {
+  .properties-container {
+    padding: 20px 16px;
+  }
+
+  .properties-title {
+    font-size: 24px;
+  }
+
+  .properties-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .properties-create-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

@@ -1,0 +1,71 @@
+.owner-account-settings-page {
+  min-height: 100vh;
+  background: var(--background, #FFFFFF);
+  padding-top: 50px; /* Match header height */
+}
+
+.account-settings-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.account-settings-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin-bottom: 32px;
+}
+
+.account-settings-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.account-settings-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 32px;
+}
+
+.account-settings-section .card {
+  border: none;
+  box-shadow: none;
+  margin: 0;
+}
+
+.account-settings-section .card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--border, #DDDDDD);
+  padding: 0 0 16px 0;
+  margin-bottom: 24px;
+}
+
+.account-settings-section .card-header h5 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin: 0;
+}
+
+.account-settings-section .card-body {
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .account-settings-container {
+    padding: 20px 16px;
+  }
+
+  .account-settings-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .account-settings-section {
+    padding: 20px;
+  }
+}
+

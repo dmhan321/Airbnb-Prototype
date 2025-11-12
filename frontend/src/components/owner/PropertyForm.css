@@ -1,0 +1,49 @@
+/* Amenities Buttons */
+.amenities-buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.amenity-button {
+  padding: 10px 20px;
+  border: 2px solid var(--border, #DDDDDD);
+  border-radius: 8px;
+  background: white;
+  color: var(--text-primary, #222222);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.amenity-button:hover {
+  border-color: var(--airbnb-red, #FF385C);
+  background: var(--background-light, #F7F7F7);
+  transform: translateY(-1px);
+}
+
+.amenity-button.selected {
+  background: var(--airbnb-red, #FF385C);
+  color: white;
+  border-color: var(--airbnb-red, #FF385C);
+}
+
+.amenity-button.selected:hover {
+  background: #E61E4D;
+  border-color: #E61E4D;
+}
+
+@media (max-width: 768px) {
+  .amenities-buttons-container {
+    gap: 8px;
+  }
+
+  .amenity-button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+

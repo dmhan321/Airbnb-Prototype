@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { formatDateLocal, formatDateUTC, getDatesInRange, parseDateUTC } from '../../utils/dateUtils';
 
 const AvailabilityCalendar = ({ 
   blockedDates = [], 
@@ -16,9 +17,23 @@ const AvailabilityCalendar = ({
   });
 
   // Check if a date is blocked
+  // Use UTC formatting to match backend blocked dates
   const isDateBlocked = (date) => {
-    const dateString = date.toISOString().split('T')[0];
+    const dateString = formatDateUTC(date);
     return blockedDates.includes(dateString);
+  };
+  
+  // Check if any date in a range is blocked
+  // Use UTC formatting to match backend blocked dates
+  const isRangeBlocked = (startDate, endDate) => {
+    if (!startDate || !endDate) return false;
+    
+    // Convert dates to strings if they're Date objects
+    const startStr = startDate instanceof Date ? formatDateUTC(startDate) : startDate;
+    const endStr = endDate instanceof Date ? formatDateUTC(endDate) : endDate;
+    
+    const datesInRange = getDatesInRange(startStr, endStr);
+    return datesInRange.some(dateString => blockedDates.includes(dateString));
   };
 
   // Check if a date is disabled
@@ -98,15 +113,25 @@ const AvailabilityCalendar = ({
   const handleDateChange = (value) => {
     if (Array.isArray(value)) {
       // Date range selection
+      const startDate = value[0];
+      const endDate = value[1];
+      
+      // Validate that the range doesn't include blocked dates
+      if (startDate && endDate && isRangeBlocked(startDate, endDate)) {
+        // Don't allow selection if range includes blocked dates
+        alert('Selected dates include unavailable dates. Please choose different dates.');
+        return;
+      }
+      
       setSelectedDates({
-        start: value[0],
-        end: value[1]
+        start: startDate,
+        end: endDate
       });
       
-      if (value[0] && value[1]) {
+      if (startDate && endDate) {
         onDateSelect({
-          startDate: value[0].toISOString().split('T')[0],
-          endDate: value[1].toISOString().split('T')[0]
+          startDate: formatDateLocal(startDate),
+          endDate: formatDateLocal(endDate)
         });
       }
     } else if (value) {
@@ -123,14 +148,24 @@ const AvailabilityCalendar = ({
         const endDate = value;
         
         if (endDate > startDate) {
+          // Validate that the range doesn't include blocked dates
+          if (isRangeBlocked(startDate, endDate)) {
+            alert('Selected dates include unavailable dates. Please choose different dates.');
+            setSelectedDates({
+              start: startDate,
+              end: null
+            });
+            return;
+          }
+          
           setSelectedDates({
             start: startDate,
             end: endDate
           });
           
           onDateSelect({
-            startDate: startDate.toISOString().split('T')[0],
-            endDate: endDate.toISOString().split('T')[0]
+            startDate: formatDateLocal(startDate),
+            endDate: formatDateLocal(endDate)
           });
         } else {
           // If end date is before start date, make it the new start date

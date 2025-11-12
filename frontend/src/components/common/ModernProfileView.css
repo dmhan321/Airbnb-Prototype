@@ -1,0 +1,248 @@
+/* Modern Profile View - Option A (Single Column Layout) */
+
+.modern-profile-view {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-loading {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-secondary, #717171);
+  font-size: 16px;
+}
+
+/* Profile Header - Centered */
+.profile-header {
+  text-align: center;
+  padding: 0px 0px;
+}
+
+.profile-picture-wrapper {
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border, #DDDDDD);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.profile-picture-placeholder {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: var(--background-light, #F7F7F7);
+  border: 3px solid var(--border, #DDDDDD);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, #717171);
+}
+
+.profile-name {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin: 0 0 8px 0;
+}
+
+.profile-email {
+  font-size: 16px;
+  color: var(--text-secondary, #717171);
+  margin: 0 0 8px 0;
+}
+
+.btn-edit-profile {
+  background: var(--airbnb-red, #FF385C);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 56, 92, 0.3);
+}
+
+.btn-edit-profile:hover {
+  background: #E61E4D;
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-edit-profile:active {
+  transform: translateY(0);
+}
+
+/* Information Card */
+.profile-info-card,
+.profile-about-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin: 0 0 24px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border, #DDDDDD);
+}
+
+/* Info Grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary, #717171);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-primary, #222222);
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+    position: relative;
+    gap: 0; /* Vertical gap between rows, no horizontal gap */
+  }
+  
+  /* Vertical divider between the two columns */
+  .info-grid::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border, #DDDDDD);
+    transform: translateX(-50%);
+    opacity: 0.6;
+    z-index: 1;
+  }
+  
+  .info-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+    z-index: 0;
+  }
+  
+  .info-label {
+    min-width: 140px;
+    text-transform: none;
+    letter-spacing: 0;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  
+  .info-value {
+    text-align: right;
+    flex: 1;
+  }
+  
+  /* Add padding to items to create space around the divider */
+  .info-item:nth-child(odd) {
+    padding-right: 70px; /* Left column - space before divider */
+  }
+  
+  .info-item:nth-child(even) {
+    padding-left: 70px; /* Right column - space after divider */
+  }
+}
+
+/* About Me Section */
+.about-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary, #222222);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* Responsive Design - Duplicate removed, using the one above */
+
+@media (max-width: 767px) {
+  .modern-profile-view {
+    gap: 24px;
+  }
+  
+  .profile-header {
+    padding: 32px 0;
+  }
+  
+  .profile-picture,
+  .profile-picture-placeholder {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .profile-name {
+    font-size: 20px;
+  }
+  
+  .profile-email {
+    font-size: 14px;
+  }
+  
+  .profile-info-card,
+  .profile-about-card {
+    padding: 20px 16px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+  }
+  
+  .info-grid {
+    gap: 16px;
+  }
+  
+  .info-item {
+    gap: 6px;
+  }
+  
+  .info-label {
+    font-size: 13px;
+  }
+  
+  .info-value {
+    font-size: 15px;
+  }
+}
+

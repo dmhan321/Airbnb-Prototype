@@ -1,0 +1,142 @@
+/* Modern Profile Styles */
+
+.modern-profile-edit,
+.modern-profile-view {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Profile Picture Upload with Drag & Drop */
+.profile-picture-upload {
+  transition: all 0.3s ease;
+}
+
+.profile-picture-upload.dragging {
+  opacity: 0.7;
+  transform: scale(1.02);
+}
+
+.profile-picture-upload:hover {
+  opacity: 0.9;
+}
+
+/* Tab Styles */
+.nav-tabs {
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.nav-tabs .nav-link {
+  color: #666;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #007bff;
+  border-bottom-color: #007bff;
+  background-color: #f8f9fa;
+}
+
+.nav-tabs .nav-link.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+  background-color: transparent;
+  font-weight: 600;
+}
+
+/* Card Styles */
+.modern-profile-edit .card,
+.modern-profile-view .card {
+  transition: box-shadow 0.3s ease;
+}
+
+.modern-profile-edit .card:hover,
+.modern-profile-view .card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+/* Section Headers */
+.card-header.bg-light {
+  background-color: #f8f9fa !important;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.card-header h5 {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Form Input Styles */
+.form-control:focus,
+.form-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+}
+
+/* Icons */
+.fas.text-primary {
+  color: #007bff !important;
+}
+
+.fas.text-muted {
+  color: #6c757d !important;
+}
+
+/* Save Indicator */
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+/* Keyboard Shortcut */
+kbd {
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 0.85em;
+  font-family: monospace;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modern-profile-edit .card-body,
+  .modern-profile-view .card-body {
+    padding: 1rem;
+  }
+  
+  .nav-tabs .nav-link {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .profile-picture-upload img,
+  .profile-picture-upload > div {
+    width: 150px !important;
+    height: 150px !important;
+  }
+}
+
+/* Animation for success message */
+.alert-success {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+

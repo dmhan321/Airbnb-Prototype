@@ -12,10 +12,8 @@ function AgentPanel({onClose}) {
     const fetchProfile = async () => {
       try {
         const profile = await authService.getProfile();
-        console.log("Loaded profile response:", profile);
         setTravelerID(profile.user.id);
       } catch (err) {
-        console.error('Error fetching traveler profile:', err);
       }
     };
     fetchProfile();
@@ -36,7 +34,6 @@ function AgentPanel({onClose}) {
       const data = await res.json();
       setResponse(data.reply || 'No response from agent.');
     } catch (err) {
-      console.error(err);
       setResponse('Error querying the agent.');
     } finally {
       setLoading(false);
@@ -66,7 +63,6 @@ function AgentPanel({onClose}) {
         setResponse('Agent failed to respond.');
       }
     } catch (err) {
-      console.error(err);
       setResponse('Error connecting to FastAPI agent.');
     } finally {
       setLoading(false);

@@ -1,0 +1,436 @@
+.traveler-dashboard-page {
+  min-height: 100vh;
+  background: var(--background, #FFFFFF);
+  padding-top: 50px; /* Match header height */
+}
+
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Tabs */
+.dashboard-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid var(--border, #DDDDDD);
+  margin-bottom: 32px;
+  overflow-x: auto;
+}
+
+.dashboard-tab {
+  background: none;
+  border: none;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-secondary, #717171);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.dashboard-tab:hover {
+  color: var(--text-primary, #222222);
+  background: var(--background-light, #F7F7F7);
+}
+
+.dashboard-tab.active {
+  color: var(--airbnb-red, #FF385C);
+  border-bottom-color: var(--airbnb-red, #FF385C);
+  font-weight: 600;
+}
+
+.dashboard-tab-icon {
+  font-size: 20px;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Hero Section */
+.dashboard-hero {
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border, #DDDDDD);
+}
+
+.dashboard-hero-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin-bottom: 8px;
+}
+
+.dashboard-hero-subtitle {
+  font-size: 18px;
+  color: var(--text-secondary, #717171);
+  margin: 0;
+}
+
+/* Stats Cards */
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.dashboard-stat-card {
+  background: white;
+  border: 1px solid var(--border, #DDDDDD);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.dashboard-stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.dashboard-stat-icon {
+  font-size: 32px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-light, #F7F7F7);
+  border-radius: 12px;
+}
+
+.dashboard-stat-content {
+  flex: 1;
+}
+
+.dashboard-stat-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  line-height: 1.2;
+}
+
+.dashboard-stat-label {
+  font-size: 14px;
+  color: var(--text-secondary, #717171);
+  margin-top: 4px;
+}
+
+/* Search Section */
+.dashboard-search-section {
+  margin-bottom: 40px;
+}
+
+/* Section */
+.dashboard-section {
+  margin-bottom: 48px;
+}
+
+.dashboard-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dashboard-section-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin: 0;
+}
+
+.dashboard-section-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary, #717171);
+  margin: 4px 0 0 0;
+}
+
+/* Properties Grid */
+.dashboard-properties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 32px;
+}
+
+/* Trips Carousel */
+.dashboard-trips-carousel {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+}
+
+.dashboard-trip-card {
+  min-width: 300px;
+  background: white;
+  border: 1px solid var(--border, #DDDDDD);
+  border-radius: 12px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.dashboard-trip-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.dashboard-trip-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.dashboard-trip-content {
+  padding: 16px;
+}
+
+.dashboard-trip-content h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin-bottom: 8px;
+}
+
+.dashboard-trip-dates {
+  font-size: 14px;
+  color: var(--text-secondary, #717171);
+  margin: 0;
+}
+
+/* Bookings List */
+.dashboard-bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-booking-card {
+  background: white;
+  border: 1px solid var(--border, #DDDDDD);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  gap: 24px;
+  transition: all 0.2s ease;
+}
+
+.dashboard-booking-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-booking-image {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.dashboard-booking-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dashboard-booking-content h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, #222222);
+  margin: 0;
+}
+
+.dashboard-booking-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 14px;
+  color: var(--text-secondary, #717171);
+}
+
+.dashboard-booking-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.dashboard-status-badge.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.dashboard-status-badge.accepted {
+  background: #d4edda;
+  color: #155724;
+}
+
+.dashboard-status-badge.completed {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.dashboard-status-badge.cancelled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.dashboard-booking-action {
+  align-self: flex-start;
+  background: white;
+  border: 1px solid var(--border, #DDDDDD);
+  color: var(--text-primary, #222222);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dashboard-booking-action:hover {
+  border-color: var(--airbnb-red, #FF385C);
+  color: var(--airbnb-red, #FF385C);
+}
+
+/* Filter Tabs */
+.dashboard-filter-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dashboard-filter-tab {
+  background: white;
+  border: 1px solid var(--border, #DDDDDD);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary, #222222);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dashboard-filter-tab:hover {
+  border-color: var(--airbnb-red, #FF385C);
+  color: var(--airbnb-red, #FF385C);
+}
+
+.dashboard-filter-tab.active {
+  background: var(--airbnb-red, #FF385C);
+  border-color: var(--airbnb-red, #FF385C);
+  color: white;
+}
+
+/* Empty State */
+.dashboard-empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-secondary, #717171);
+}
+
+/* Loading & Error */
+.dashboard-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.dashboard-error {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  color: var(--error, #C13515);
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Profile Section */
+.dashboard-profile-section {
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border, #DDDDDD);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 24px 16px;
+  }
+
+  .dashboard-tabs {
+    gap: 4px;
+  }
+
+  .dashboard-tab {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .dashboard-tab-icon {
+    font-size: 18px;
+  }
+
+  .dashboard-tab-label {
+    display: none;
+  }
+
+  .dashboard-hero-title {
+    font-size: 24px;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-properties-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .dashboard-booking-card {
+    flex-direction: column;
+  }
+
+  .dashboard-booking-image {
+    width: 100%;
+    height: 200px;
+  }
+
+  .dashboard-trips-carousel {
+    gap: 16px;
+  }
+
+  .dashboard-trip-card {
+    min-width: 280px;
+  }
+}
+
