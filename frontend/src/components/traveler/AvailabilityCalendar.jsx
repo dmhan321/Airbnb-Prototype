@@ -17,14 +17,13 @@ const AvailabilityCalendar = ({
   });
 
   // Check if a date is blocked
-  // Use UTC formatting to match backend blocked dates
   const isDateBlocked = (date) => {
+    if (!blockedDates || blockedDates.length === 0) return false;
     const dateString = formatDateUTC(date);
     return blockedDates.includes(dateString);
   };
   
   // Check if any date in a range is blocked
-  // Use UTC formatting to match backend blocked dates
   const isRangeBlocked = (startDate, endDate) => {
     if (!startDate || !endDate) return false;
     
@@ -76,8 +75,10 @@ const AvailabilityCalendar = ({
   const tileClassName = ({ date, view }) => {
     if (view === 'month') {
       const classes = [];
+      const isBlocked = isDateBlocked(date);
       
-      if (isDateBlocked(date)) {
+      // Blocked dates take priority - check first
+      if (isBlocked) {
         classes.push('blocked-date');
       } else if (isDateDisabled(date)) {
         classes.push('disabled-date');
@@ -85,16 +86,16 @@ const AvailabilityCalendar = ({
         classes.push('available-date');
       }
       
-      // Highlight selected dates
-      if (selectedDates.start && date.toDateString() === selectedDates.start.toDateString()) {
+      // Highlight selected dates (only if not blocked)
+      if (!isBlocked && selectedDates.start && date.toDateString() === selectedDates.start.toDateString()) {
         classes.push('selected-start');
       }
-      if (selectedDates.end && date.toDateString() === selectedDates.end.toDateString()) {
+      if (!isBlocked && selectedDates.end && date.toDateString() === selectedDates.end.toDateString()) {
         classes.push('selected-end');
       }
       
-      // Highlight date range
-      if (selectedDates.start && selectedDates.end) {
+      // Highlight date range (only if not blocked)
+      if (!isBlocked && selectedDates.start && selectedDates.end) {
         const dateTime = date.getTime();
         const startTime = selectedDates.start.getTime();
         const endTime = selectedDates.end.getTime();

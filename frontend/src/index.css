@@ -81,15 +81,15 @@ code {
   background-color: #c8e6c9;
 }
 
-/* Blocked dates - red highlight */
+/* Blocked dates - pink highlight (must override selected/in-range styles) */
 .react-calendar__tile.blocked-date {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: #fce4ec !important;
+  color: #c2185b !important;
   cursor: not-allowed;
 }
 
 .react-calendar__tile.blocked-date:hover {
-  background-color: #ffcdd2;
+  background-color: #f8bbd0 !important;
 }
 
 /* Disabled dates - gray */

@@ -1,0 +1,47 @@
+# Property Service Dockerfile
+# Build from backend directory: docker build -f Dockerfile.property-service -t property-service .
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Create services directory structure
+RUN mkdir -p services/shared services/property-service
+
+# Copy shared directory first
+COPY services/shared ./services/shared
+
+# Copy service package files to root for dependency installation
+COPY services/property-service/package.json ./
+COPY services/property-service/package-lock.json* ./
+
+# Install dependencies at root level so shared code can access them
+RUN npm install --omit=dev
+
+# Verify node_modules was created
+RUN test -d node_modules && echo "✓ node_modules created successfully" || (echo "✗ node_modules creation failed" && exit 1)
+
+# Remove root package files after installation (we don't need them at runtime)
+RUN rm -f package.json package-lock.json
+
+# Copy service application code (from build context, not current WORKDIR)
+WORKDIR /app
+COPY services/property-service/ ./services/property-service/
+WORKDIR /app/services/property-service
+
+# Create uploads directory
+WORKDIR /app/services/property-service
+RUN mkdir -p uploads/property-photos
+
+# Expose port
+EXPOSE 5003
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:5003/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Set working directory back to service
+WORKDIR /app/services/property-service
+
+# Start service
+CMD ["node", "server.js"]
+

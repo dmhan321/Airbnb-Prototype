@@ -391,7 +391,7 @@ const uploadProfilePicture = async (req, res) => {
     }
 
     const userId = req.user._id;
-    const baseUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5002}`;
+    const baseUrl = process.env.PUBLIC_OWNER_SERVICE_URL || process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5002}`;
     const profilePictureUrl = `${baseUrl}/uploads/profile-pictures/${req.file.filename}`;
 
     const user = await Owner.findById(userId);

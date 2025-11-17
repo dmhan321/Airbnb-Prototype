@@ -7,11 +7,21 @@ require('dotenv').config();
 // MongoDB connection and models
 const { connectDB } = require('../shared/models/mongoose');
 
+// Kafka initialization
+const { connectProducer } = require('../shared/kafka/kafkaClient');
+const { startStatusConsumer } = require('./kafka/statusConsumer');
+
 const app = express();
 const PORT = process.env.PORT || 5002;
 
 // Connect to MongoDB
 connectDB();
+
+// Initialize Kafka
+connectProducer()
+  .then(() => startStatusConsumer())
+  .then(() => console.log('✓ Kafka integration ready'))
+  .catch(err => console.error('✗ Kafka initialization error:', err.message));
 
 // Middleware
 app.use(cors({
@@ -54,17 +64,7 @@ app.use('/uploads', (req, res, next) => {
     });
   }
   
-  console.error('File not found:', {
-    requestedPath: req.path,
-    filePath,
-    serviceFile,
-    legacyFile,
-    serviceExists: fs.existsSync(serviceFile),
-    legacyExists: fs.existsSync(legacyFile),
-    serviceUploadsDir,
-    legacyUploadsDir
-  });
-  
+  console.error(`File not found: ${req.path}`);
   res.status(404).json({ error: 'File not found' });
 });
 

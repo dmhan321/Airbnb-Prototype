@@ -1,0 +1,47 @@
+# Owner Service Dockerfile
+# Build from backend directory: docker build -f Dockerfile.owner-service -t owner-service .
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Create services directory structure
+RUN mkdir -p services/shared services/owner-service
+
+# Copy shared directory first
+COPY services/shared ./services/shared
+
+# Copy service package files to root for dependency installation
+COPY services/owner-service/package.json ./
+COPY services/owner-service/package-lock.json* ./
+
+# Install dependencies at root level so shared code can access them
+RUN npm install --omit=dev
+
+# Verify node_modules was created
+RUN test -d node_modules && echo "✓ node_modules created successfully" || (echo "✗ node_modules creation failed" && exit 1)
+
+# Remove root package files after installation (we don't need them at runtime)
+RUN rm -f package.json package-lock.json
+
+# Copy service application code (from build context, not current WORKDIR)
+WORKDIR /app
+COPY services/owner-service/ ./services/owner-service/
+WORKDIR /app/services/owner-service
+
+# Create uploads directory
+WORKDIR /app/services/owner-service
+RUN mkdir -p uploads
+
+# Expose port
+EXPOSE 5002
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:5002/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Set working directory back to service
+WORKDIR /app/services/owner-service
+
+# Start service
+CMD ["node", "server.js"]
+

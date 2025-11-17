@@ -217,14 +217,13 @@ const PropertyEditForm = ({ property, onPropertyUpdated, onCancel }) => {
 
       const response = await propertyService.updateProperty(propertyId, updatedPropertyData);
       if (response.success) {
-        // Call the callback to close the form and reload properties
-        onPropertyUpdated();
+        // Call the callback with property ID to navigate to property detail page
+        onPropertyUpdated(propertyId);
       } else {
         setError(response.message || 'Failed to update property');
         setLoading(false);
       }
     } catch (err) {
-      console.error('Property update error:', err);
       const errorMessage = err.response?.data?.message || err.message || 'Failed to update property';
       setError(errorMessage);
       setLoading(false);

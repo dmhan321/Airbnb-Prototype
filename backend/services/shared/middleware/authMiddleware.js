@@ -123,7 +123,7 @@ const getCurrentUser = async (req, res, next) => {
     
     next();
   } catch (error) {
-    console.error('Error getting current user:', error);
+    // Silently continue if authentication fails (optional auth)
     next();
   }
 };

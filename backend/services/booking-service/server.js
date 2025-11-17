@@ -5,11 +5,21 @@ require('dotenv').config();
 // MongoDB connection and models
 const { connectDB } = require('../shared/models/mongoose');
 
+// Kafka initialization
+const { connectProducer } = require('../shared/kafka/kafkaClient');
+const { startBookingConsumer } = require('./kafka/bookingConsumer');
+
 const app = express();
 const PORT = process.env.PORT || 5004;
 
 // Connect to MongoDB
 connectDB();
+
+// Initialize Kafka
+connectProducer()
+  .then(() => startBookingConsumer())
+  .then(() => console.log('✓ Kafka integration ready'))
+  .catch(err => console.error('✗ Kafka initialization error:', err.message));
 
 // Middleware
 app.use(cors({

@@ -9,6 +9,7 @@ export const store = configureStore({
     property: propertyReducer,
     booking: bookingReducer,
   },
-  devTools: process.env.NODE_ENV !== 'production',
+  // Enable DevTools in all environments for Lab 2 demonstration
+  devTools: true,
 });
 

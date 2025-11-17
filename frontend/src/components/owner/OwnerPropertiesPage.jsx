@@ -91,7 +91,7 @@ const OwnerPropertiesPage = () => {
     setEditingProperty(null);
   };
 
-  const handlePropertyUpdated = () => {
+  const handlePropertyUpdated = (propertyId) => {
     // Set flag to prevent useEffect from interfering
     isUpdatingRef.current = true;
     
@@ -101,12 +101,25 @@ const OwnerPropertiesPage = () => {
     if (location.state?.editPropertyId) {
       window.history.replaceState({}, document.title);
     }
-    // Then reload properties
+    // Then reload properties and navigate to property detail page
     loadProperties().finally(() => {
       // Reset flag after properties are loaded
       setTimeout(() => {
         isUpdatingRef.current = false;
       }, 100);
+      
+      // Navigate to property detail page to show updated property
+      // Pass referrer state so it shows owner view, not traveler view
+      // The referrer must NOT be 'trips', 'home', 'favorites', or 'search' for owner view
+      if (propertyId) {
+        navigate(`/property/${propertyId}`, {
+          state: {
+            referrer: 'owner-properties',  // Use 'owner-properties' instead of 'properties' to ensure owner view
+            referrerLabel: 'Your properties',
+            referrerPath: '/owner/properties'
+          }
+        });
+      }
     });
   };
 

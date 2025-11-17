@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchPropertyById, addFavorite, removeFavorite, fetchFavorites, addViewedProperty } from '../../store/slices/propertySlice';
+import { bookingService } from '../../services/bookingService';
 import AirbnbHeader from '../common/AirbnbHeader';
 import ImageGallery from './ImageGallery';
 import BookingWidget from './BookingWidget';
@@ -54,11 +55,9 @@ const PropertyDetailsEnhanced = () => {
   // Get blocked dates from existing bookings
   const getBlockedDates = useCallback(async () => {
     try {
-      const bookingServiceUrl = process.env.REACT_APP_BOOKING_SERVICE_URL || 'http://localhost:5004';
-      const response = await fetch(`${bookingServiceUrl}/api/bookings/property/${id}/blocked-dates`);
-      const data = await response.json();
+      const data = await bookingService.getBlockedDates(id);
       
-      if (data.success) {
+      if (data.success && data.blockedDates) {
         setBlockedDates(data.blockedDates);
       } else {
         setBlockedDates([]);
@@ -93,24 +92,20 @@ const PropertyDetailsEnhanced = () => {
       return;
     }
     
-    try {
-      if (isFavorited) {
-        const favoritesResult = await dispatch(fetchFavorites());
-        if (favoritesResult.type === 'property/fetchFavorites/fulfilled') {
-          const favorites = favoritesResult.payload;
-          const favorite = favorites.find(fav => {
-            const favPropertyId = fav.property?.id || fav.propertyId || fav.property?._id;
-            return favPropertyId === propertyId;
-          });
-          if (favorite) {
-            await dispatch(removeFavorite(favorite.id || favorite._id));
-          }
+    if (isFavorited) {
+      const favoritesResult = await dispatch(fetchFavorites());
+      if (favoritesResult.type === 'property/fetchFavorites/fulfilled') {
+        const favorites = favoritesResult.payload;
+        const favorite = favorites.find(fav => {
+          const favPropertyId = fav.property?.id || fav.propertyId || fav.property?._id;
+          return favPropertyId === propertyId;
+        });
+        if (favorite) {
+          await dispatch(removeFavorite(favorite.id || favorite._id));
         }
-      } else {
-        await dispatch(addFavorite(propertyId));
       }
-    } catch (err) {
-      setError('Failed to update favorite');
+    } else {
+      await dispatch(addFavorite(propertyId));
     }
   };
 
@@ -359,7 +354,11 @@ const PropertyDetailsEnhanced = () => {
           {/* Right Column - 40% Booking Widget (only if not owner) */}
           {!isOwner && (
             <div className="property-details-booking">
-              <BookingWidget property={property} blockedDates={blockedDates} />
+              <BookingWidget 
+                property={property} 
+                blockedDates={blockedDates}
+                onBookingSuccess={getBlockedDates}
+              />
             </div>
           )}
         </div>

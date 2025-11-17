@@ -43,12 +43,6 @@ export const propertyService = {
     return response.data;
   },
 
-  // Get blocked dates for a property
-  getBlockedDates: async (propertyId) => {
-    const response = await propertyApi.get(`/bookings/property/${propertyId}/blocked-dates`);
-    return response.data;
-  },
-
   // Upload property photos
   uploadPropertyPhotos: async (propertyId, photos, isNewProperty = true) => {
     const formData = new FormData();

@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { Booking, Property } = require('../../shared/models/mongoose');
 const { transformDocument, transformDocuments, transformNested } = require('../../shared/utils/transform');
+const { sendMessage } = require('../../shared/kafka/kafkaClient');
 
 // Property service URL for validation
 const PROPERTY_SERVICE_URL = process.env.PROPERTY_SERVICE_URL || 'http://localhost:5003';
@@ -104,6 +105,26 @@ const acceptBooking = async (req, res) => {
     booking.status = 'ACCEPTED';
     await booking.save();
 
+    // Publish status update to Kafka
+    try {
+      await sendMessage('booking-status-updates', [{
+        key: booking._id.toString(),
+        value: {
+          bookingId: booking._id.toString(),
+          travelerId: booking.travelerId?.toString() || booking.travelerId,
+          ownerId: booking.ownerId?.toString() || booking.ownerId,
+          propertyId: booking.propertyId?._id?.toString() || booking.propertyId?.toString() || booking.propertyId,
+          status: 'ACCEPTED',
+          action: 'BOOKING_ACCEPTED',
+          timestamp: new Date().toISOString()
+        }
+      }]);
+      console.log('✓ Booking accepted event published to Kafka');
+    } catch (error) {
+      console.error('✗ Error publishing booking accepted event:', error.message);
+      // Don't fail the request if Kafka publish fails
+    }
+
     const transformed = transformDocument(booking);
 
     res.json({
@@ -162,6 +183,26 @@ const rejectBooking = async (req, res) => {
     booking.status = 'CANCELLED';
     await booking.save();
 
+    // Publish status update to Kafka
+    try {
+      await sendMessage('booking-status-updates', [{
+        key: booking._id.toString(),
+        value: {
+          bookingId: booking._id.toString(),
+          travelerId: booking.travelerId?.toString() || booking.travelerId,
+          ownerId: booking.ownerId?.toString() || booking.ownerId,
+          propertyId: booking.propertyId?._id?.toString() || booking.propertyId?.toString() || booking.propertyId,
+          status: 'CANCELLED',
+          action: 'BOOKING_REJECTED',
+          timestamp: new Date().toISOString()
+        }
+      }]);
+      console.log('✓ Booking rejected event published to Kafka');
+    } catch (error) {
+      console.error('✗ Error publishing booking rejected event:', error.message);
+      // Don't fail the request if Kafka publish fails
+    }
+
     const transformed = transformDocument(booking);
 
     res.json({
@@ -219,6 +260,26 @@ const cancelBooking = async (req, res) => {
     // Update booking status
     booking.status = 'CANCELLED';
     await booking.save();
+
+    // Publish status update to Kafka
+    try {
+      await sendMessage('booking-status-updates', [{
+        key: booking._id.toString(),
+        value: {
+          bookingId: booking._id.toString(),
+          travelerId: booking.travelerId?.toString() || booking.travelerId,
+          ownerId: booking.ownerId?.toString() || booking.ownerId,
+          propertyId: booking.propertyId?._id?.toString() || booking.propertyId?.toString() || booking.propertyId,
+          status: 'CANCELLED',
+          action: 'BOOKING_CANCELLED',
+          timestamp: new Date().toISOString()
+        }
+      }]);
+      console.log('✓ Booking cancelled event published to Kafka (by owner)');
+    } catch (error) {
+      console.error('✗ Error publishing booking cancelled event:', error.message);
+      // Don't fail the request if Kafka publish fails
+    }
 
     const transformed = transformDocument(booking);
 

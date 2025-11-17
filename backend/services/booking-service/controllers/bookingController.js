@@ -2,6 +2,7 @@ const axios = require('axios');
 const { Booking, Property, Traveler } = require('../../shared/models/mongoose');
 const { transformDocument, transformDocuments, transformNested } = require('../../shared/utils/transform');
 const { parseDateUTC, getTodayUTC, normalizeToUTCMidnight, formatDateUTC } = require('../../shared/utils/dateUtils');
+const { sendMessage } = require('../../shared/kafka/kafkaClient');
 
 // Property service URL for validation
 const PROPERTY_SERVICE_URL = process.env.PROPERTY_SERVICE_URL || 'http://localhost:5003';
@@ -280,6 +281,26 @@ const cancelBooking = async (req, res) => {
 
     booking.status = 'CANCELLED';
     await booking.save();
+
+    // Publish status update to Kafka
+    try {
+      await sendMessage('booking-status-updates', [{
+        key: booking._id.toString(),
+        value: {
+          bookingId: booking._id.toString(),
+          travelerId: booking.travelerId?.toString() || booking.travelerId,
+          ownerId: booking.propertyId?.ownerId?.toString() || booking.propertyId?.ownerId,
+          propertyId: booking.propertyId?._id?.toString() || booking.propertyId?.toString() || booking.propertyId,
+          status: 'CANCELLED',
+          action: 'BOOKING_CANCELLED',
+          timestamp: new Date().toISOString()
+        }
+      }]);
+      console.log('✓ Booking cancelled event published to Kafka (by traveler)');
+    } catch (error) {
+      console.error('✗ Error publishing booking cancelled event:', error.message);
+      // Don't fail the request if Kafka publish fails
+    }
 
     const transformed = transformDocument(booking);
 

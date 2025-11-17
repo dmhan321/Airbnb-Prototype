@@ -100,6 +100,11 @@ async def agent_button_handler(req: ButtonRequest):
     # Step 5: Return structured result
     return {"success": True, "reply": reply.strip()}
 
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "service": "agent-backend"}
+
 # ---- Run locally ----
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=5005)

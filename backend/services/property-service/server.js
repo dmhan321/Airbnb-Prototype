@@ -25,11 +25,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static files for uploads
-// Serve from service-specific directory first, then fallback to old location
+// Serve from service-specific directory first, then fallback to legacy location
 const serviceUploadsDir = path.join(__dirname, 'uploads');
 const legacyUploadsDir = path.join(__dirname, '../../uploads');
 
-// Custom middleware to check both directories (similar to profile picture fix)
 app.use('/uploads', (req, res, next) => {
   const filePath = req.path.replace('/uploads/', '');
   
@@ -54,17 +53,7 @@ app.use('/uploads', (req, res, next) => {
     });
   }
   
-  console.error('File not found:', {
-    requestedPath: req.path,
-    filePath,
-    serviceFile,
-    legacyFile,
-    serviceExists: fs.existsSync(serviceFile),
-    legacyExists: fs.existsSync(legacyFile),
-    serviceUploadsDir,
-    legacyUploadsDir
-  });
-  
+  console.error(`File not found: ${req.path}`);
   res.status(404).json({ error: 'File not found' });
 });
 

@@ -62,6 +62,7 @@ wheels/
 
 # Uploads directory (contains user uploaded files)
 backend/uploads/
+backend/services/*/uploads/
 frontend/public/uploads/
 
 # IDE and editor files
@@ -74,3 +75,6 @@ frontend/public/uploads/
 # OS-specific
 .DS_Store
 Thumbs.db
+
+# Service-specific node_modules
+backend/services/*/node_modules/

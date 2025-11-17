@@ -1,9 +1,10 @@
-import { bookingApi, ownerApi } from './api';
+import { bookingApi, ownerApi, travelerApi } from './api';
 
 export const bookingService = {
-  // Create booking
+  // Create booking (via Kafka - calls Traveler Service)
   createBooking: async (bookingData) => {
-    const response = await bookingApi.post('/bookings', bookingData);
+    // Route through Traveler Service which publishes to Kafka
+    const response = await travelerApi.post('/bookings', bookingData);
     return response.data;
   },
 

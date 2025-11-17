@@ -1,0 +1,219 @@
+services:
+  # Zookeeper for Kafka
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: airbnb-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - airbnb-network
+
+  # Kafka Broker
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: airbnb-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    networks:
+      - airbnb-network
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: airbnb-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: airbnb_db
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - airbnb-network
+
+  # Traveler Service
+  traveler-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.traveler-service
+    container_name: airbnb-traveler-service
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - MONGODB_URI=mongodb://mongodb:27017/airbnb_db
+      - JWT_SECRET=${JWT_SECRET:-airbnb-secret-key-change-in-production}
+      - JWT_EXPIRES_IN=7d
+      - FRONTEND_URL=http://localhost:3000
+      - NODE_ENV=production
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_CLIENT_ID=airbnb-app
+      - PROPERTY_SERVICE_URL=http://property-service:5003
+      - PUBLIC_TRAVELER_SERVICE_URL=http://localhost:5001
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    volumes:
+      - traveler-uploads:/app/uploads
+    networks:
+      - airbnb-network
+
+  # Owner Service
+  owner-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.owner-service
+    container_name: airbnb-owner-service
+    restart: unless-stopped
+    ports:
+      - "5002:5002"
+    environment:
+      - PORT=5002
+      - MONGODB_URI=mongodb://mongodb:27017/airbnb_db
+      - JWT_SECRET=${JWT_SECRET:-airbnb-secret-key-change-in-production}
+      - JWT_EXPIRES_IN=7d
+      - FRONTEND_URL=http://localhost:3000
+      - PROPERTY_SERVICE_URL=http://property-service:5003
+      - BOOKING_SERVICE_URL=http://booking-service:5004
+      - PUBLIC_OWNER_SERVICE_URL=http://localhost:5002
+      - NODE_ENV=production
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_CLIENT_ID=airbnb-app
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    volumes:
+      - owner-uploads:/app/uploads
+    networks:
+      - airbnb-network
+
+  # Property Service
+  property-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.property-service
+    container_name: airbnb-property-service
+    restart: unless-stopped
+    ports:
+      - "5003:5003"
+    environment:
+      - PORT=5003
+      - MONGODB_URI=mongodb://mongodb:27017/airbnb_db
+      - JWT_SECRET=${JWT_SECRET:-airbnb-secret-key-change-in-production}
+      - JWT_EXPIRES_IN=7d
+      - FRONTEND_URL=http://localhost:3000
+      - PROPERTY_SERVICE_URL=http://property-service:5003
+      - PUBLIC_PROPERTY_SERVICE_URL=http://localhost:5003
+      - NODE_ENV=production
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - property-uploads:/app/uploads
+    networks:
+      - airbnb-network
+
+  # Booking Service
+  booking-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.booking-service
+    container_name: airbnb-booking-service
+    restart: unless-stopped
+    ports:
+      - "5004:5004"
+    environment:
+      - PORT=5004
+      - MONGODB_URI=mongodb://mongodb:27017/airbnb_db
+      - JWT_SECRET=${JWT_SECRET:-airbnb-secret-key-change-in-production}
+      - JWT_EXPIRES_IN=7d
+      - FRONTEND_URL=http://localhost:3000
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_CLIENT_ID=airbnb-app
+      - PROPERTY_SERVICE_URL=http://property-service:5003
+      - BOOKING_SERVICE_URL=http://booking-service:5004
+      - NODE_ENV=production
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      property-service:
+        condition: service_started
+    networks:
+      - airbnb-network
+
+  # Agent Backend (Python/FastAPI)
+  agent-backend:
+    build:
+      context: ./agent-backend
+      dockerfile: Dockerfile
+    container_name: airbnb-agent-backend
+    restart: unless-stopped
+    ports:
+      - "5005:5005"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AGENT_PORT=5005
+      - NODE_ENV=production
+    networks:
+      - airbnb-network
+
+  # Frontend (React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_TRAVELER_SERVICE_URL=http://localhost:5001/api
+        - REACT_APP_OWNER_SERVICE_URL=http://localhost:5002/api
+        - REACT_APP_PROPERTY_SERVICE_URL=http://localhost:5003/api
+        - REACT_APP_BOOKING_SERVICE_URL=http://localhost:5004/api
+        - REACT_APP_AGENT_URL=http://localhost:5005
+    container_name: airbnb-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - traveler-service
+      - owner-service
+      - property-service
+      - booking-service
+      - agent-backend
+    networks:
+      - airbnb-network
+
+volumes:
+  mongodb_data:
+  traveler-uploads:
+  owner-uploads:
+  property-uploads:
+
+networks:
+  airbnb-network:
+    driver: bridge
+
+

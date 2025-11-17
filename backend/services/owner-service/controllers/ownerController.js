@@ -118,7 +118,7 @@ const uploadProfilePicture = async (req, res) => {
     }
 
 
-    const baseUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5002}`;
+    const baseUrl = process.env.PUBLIC_OWNER_SERVICE_URL || process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5002}`;
     const profilePicture = `${baseUrl}/uploads/profile-pictures/${req.file.filename}`;
     
     // Delete old profile picture if it exists

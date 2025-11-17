@@ -509,11 +509,12 @@ const uploadPropertyPhotos = async (req, res) => {
 
     // Process uploaded files
     const uploadedPhotos = [];
-    const PROPERTY_SERVICE_URL = process.env.PROPERTY_SERVICE_URL || 'http://localhost:5003';
+    // Use PUBLIC_PROPERTY_SERVICE_URL for browser-accessible URLs, fallback to PROPERTY_SERVICE_URL
+    const PUBLIC_PROPERTY_SERVICE_URL = process.env.PUBLIC_PROPERTY_SERVICE_URL || process.env.PROPERTY_SERVICE_URL || 'http://localhost:5003';
     
     files.forEach(file => {
-      // Construct URL for the uploaded photo
-      const photoUrl = `${PROPERTY_SERVICE_URL}/uploads/property-photos/${file.filename}`;
+      // Construct URL for the uploaded photo (use public URL so browser can access it)
+      const photoUrl = `${PUBLIC_PROPERTY_SERVICE_URL}/uploads/property-photos/${file.filename}`;
       uploadedPhotos.push(photoUrl);
     });
 

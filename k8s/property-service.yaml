@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: property-service
+  namespace: airbnb
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5003
+      targetPort: 5003
+      name: http
+  selector:
+    app: property-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: property-service
+  namespace: airbnb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: property-service
+  template:
+    metadata:
+      labels:
+        app: property-service
+    spec:
+      containers:
+      - name: property-service
+        image: airbnb-prototype-property-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5003
+          name: http
+        env:
+        - name: PORT
+          value: "5003"
+        - name: MONGODB_URI
+          valueFrom:
+            configMapKeyRef:
+              name: airbnb-config
+              key: MONGODB_URI
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: airbnb-secrets
+              key: JWT_SECRET
+        - name: JWT_EXPIRES_IN
+          valueFrom:
+            configMapKeyRef:
+              name: airbnb-config
+              key: JWT_EXPIRES_IN
+        - name: FRONTEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: airbnb-config
+              key: FRONTEND_URL
+        - name: PROPERTY_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: airbnb-config
+              key: PROPERTY_SERVICE_URL
+        - name: PUBLIC_PROPERTY_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: airbnb-config
+              key: PUBLIC_PROPERTY_SERVICE_URL
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: airbnb-config
+              key: NODE_ENV
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5003
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5003
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+        volumeMounts:
+        - name: uploads
+          mountPath: /app/uploads
+      volumes:
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: property-uploads-pvc
+
+

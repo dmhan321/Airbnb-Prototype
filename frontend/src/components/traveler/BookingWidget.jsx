@@ -6,7 +6,7 @@ import AvailabilityCalendar from './AvailabilityCalendar';
 import { formatDateLocal, getDatesInRange } from '../../utils/dateUtils';
 import './BookingWidget.css';
 
-const BookingWidget = ({ property, blockedDates = [] }) => {
+const BookingWidget = ({ property, blockedDates = [], onBookingSuccess }) => {
   const dispatch = useAppDispatch();
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const { loading: bookingLoading } = useAppSelector((state) => state.booking);
@@ -93,6 +93,11 @@ const BookingWidget = ({ property, blockedDates = [] }) => {
       if (result.type === 'booking/createBooking/fulfilled') {
         // Show success message
         alert('Booking successfully created!');
+        
+        // Refresh blocked dates if callback provided (for staying on page)
+        if (onBookingSuccess) {
+          onBookingSuccess();
+        }
         
         // Re-fetch bookings to ensure the new booking is in the list
         await dispatch(fetchBookings('traveler'));

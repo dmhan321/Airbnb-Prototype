@@ -1,16 +1,16 @@
 # 🏠 Airbnb Prototype
 
-A full-stack Airbnb clone built with React, Node.js, Express, MongoDB, and an AI-powered travel assistant. It features a microservices architecture with separate services for travelers, owners, properties, and bookings. The application supports user authentication, property management, bookings, favorites, and an intelligent concierge agent for personalized travel recommendations.
+A full-stack Airbnb clone built with React, Node.js, Express, MongoDB, and an AI-powered travel assistant. The application features a microservices architecture with Docker containerization, Kubernetes orchestration, Kafka for asynchronous messaging, and Redux for state management.
 
 ## ✨ Key Features
 
 ### 🧑‍💻 Core Functionality
 - **User Authentication** – JWT-based authentication with separate registration/login for travelers and property owners
 - **Property Management** – CRUD operations with image uploads and availability control
-- **Booking System** – Full booking workflow with status tracking and history
+- **Booking System** – Full booking workflow with Kafka-powered asynchronous processing and status tracking
 - **Favorites** – Add/remove properties with real-time updates
 - **Profile Management** – Editable traveler/owner profiles with photo uploads
-- **State Management** – Redux Toolkit for centralized state management
+- **State Management** – Redux Toolkit for centralized state management (authentication, properties, bookings)
 
 ### 🤖 AI Concierge Agent
 - **Smart Recommendations** – Activities, restaurants, packing lists, and itineraries
@@ -20,11 +20,14 @@ A full-stack Airbnb clone built with React, Node.js, Express, MongoDB, and an AI
 
 ### 💡 Technical Highlights
 - **Microservices Architecture** – Separate services for scalability and maintainability
+- **Docker Containerization** – All services containerized with Docker
+- **Kubernetes Orchestration** – Deploy and scale services with Kubernetes
+- **Kafka Integration** – Asynchronous event-driven messaging for booking workflow
+- **Redux State Management** – Centralized state for authentication, properties, and bookings
 - **JWT Authentication** – Stateless authentication with JSON Web Tokens
 - **MongoDB Database** – NoSQL database with Mongoose ODM
 - **RESTful APIs** using MVC architecture
 - **Responsive Frontend** (React + Bootstrap 5 + Redux)
-- **AI Microservice** integrated via separate FastAPI backend
 
 ## 🧱 Tech Stack
 
@@ -34,6 +37,9 @@ A full-stack Airbnb clone built with React, Node.js, Express, MongoDB, and an AI
 | **Backend** | Node.js, Express.js, Microservices Architecture |
 | **Services** | Traveler Service (5001), Owner Service (5002), Property Service (5003), Booking Service (5004) |
 | **Database** | MongoDB with Mongoose ODM |
+| **Containerization** | Docker, Docker Compose |
+| **Orchestration** | Kubernetes (Minikube for local) |
+| **Messaging** | Apache Kafka (for asynchronous booking processing) |
 | **Authentication** | JWT (jsonwebtoken), bcryptjs |
 | **File Upload** | Multer |
 | **Validation** | Joi |
@@ -43,176 +49,134 @@ A full-stack Airbnb clone built with React, Node.js, Express, MongoDB, and an AI
 ## 🏗️ Architecture
 
 ### Microservices
-- **Traveler Service** (Port 5001) – Authentication, profile management, favorites
-- **Owner Service** (Port 5002) – Owner authentication, profile, booking management
+- **Traveler Service** (Port 5001) – Authentication, profile management, favorites, booking requests (Kafka producer)
+- **Owner Service** (Port 5002) – Owner authentication, profile, booking management (Kafka consumer)
 - **Property Service** (Port 5003) – Property CRUD, search, photo uploads
-- **Booking Service** (Port 5004) – Booking creation, status management, blocked dates
+- **Booking Service** (Port 5004) – Booking creation from Kafka, status management, blocked dates (Kafka consumer/producer)
 - **Shared Components** – Models, middleware, utilities used across services
+
+### Kafka Event Flow
+1. **Traveler creates booking** → Publishes to `booking-requests` topic
+2. **Booking Service consumes** → Creates booking in MongoDB → Publishes to `booking-status-updates` topic
+3. **Owner/Traveler Services consume** → Update UI with booking status changes
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Node.js** v18+
-- **npm** (comes with Node.js)
-- **Python** 3.8+ (for AI agent)
-- **MongoDB** 6.0+ (local installation or MongoDB Atlas)
-- **Git**
 
-### 1️⃣ Clone the Repository
+- **Docker Desktop** ([Download here](https://www.docker.com/products/docker-desktop/))
+
+---
+
+## 🐳 Quick Start with Docker (Recommended)
+
+This is the **easiest way** to run the application. All services are pre-configured in Docker Compose.
+
+### Step 1: Install and Start Docker Desktop
+
+Install Docker Desktop from https://www.docker.com/products/docker-desktop/ and make sure it's running before proceeding.
+
+### Step 2: Clone the Repository
+
 ```bash
 git clone https://github.com/dmhan321/Airbnb-Prototype.git
 cd Airbnb-Prototype
 ```
 
-### 2️⃣ Configure Environment Variables
+### Step 3: Configure Environment Variables (Optional)
 
-**Backend Services** (create `.env` in each service directory or use root `.env`)
+Create a `.env` file in the project root (optional - defaults are provided):
 
-**Traveler Service** (`backend/services/traveler-service/.env`)
 ```env
-PORT=5001
-MONGODB_URI=mongodb://localhost:27017/airbnb_db
-JWT_SECRET=your-jwt-secret-key
-JWT_EXPIRES_IN=7d
-FRONTEND_URL=http://localhost:3000
+# JWT Secret (change this in production!)
+JWT_SECRET=airbnb-secret-key-change-in-production
+
+# OpenAI API Key (optional - for AI agent)
+OPENAI_API_KEY=your-openai-api-key-here
 ```
 
-**Owner Service** (`backend/services/owner-service/.env`)
-```env
-PORT=5002
-MONGODB_URI=mongodb://localhost:27017/airbnb_db
-JWT_SECRET=your-jwt-secret-key
-JWT_EXPIRES_IN=7d
-FRONTEND_URL=http://localhost:3000
-```
+**Note:** If you don't create this file, the application will use default values. For production, you should set your own `JWT_SECRET`.
 
-**Property Service** (`backend/services/property-service/.env`)
-```env
-PORT=5003
-MONGODB_URI=mongodb://localhost:27017/airbnb_db
-JWT_SECRET=your-jwt-secret-key
-JWT_EXPIRES_IN=7d
-FRONTEND_URL=http://localhost:3000
-```
+### Step 4: Start All Services
 
-**Booking Service** (`backend/services/booking-service/.env`)
-```env
-PORT=5004
-MONGODB_URI=mongodb://localhost:27017/airbnb_db
-JWT_SECRET=your-jwt-secret-key
-JWT_EXPIRES_IN=7d
-FRONTEND_URL=http://localhost:3000
-```
-
-**Frontend** (`frontend/.env`)
-```env
-REACT_APP_API_URL=http://localhost:5001/api
-REACT_APP_TRAVELER_API_URL=http://localhost:5001/api
-REACT_APP_OWNER_API_URL=http://localhost:5002/api
-REACT_APP_PROPERTY_API_URL=http://localhost:5003/api
-REACT_APP_BOOKING_API_URL=http://localhost:5004/api
-REACT_APP_AGENT_URL=http://localhost:5005
-```
-
-**AI Agent Backend** (`agent-backend/.env`)
-```env
-OPENAI_API_KEY=your-openai-api-key
-AGENT_PORT=5005
-```
-
-### 3️⃣ Database Setup (MongoDB)
-
-**Option 1: Local MongoDB**
-1. Install MongoDB locally
-2. Start MongoDB service
-3. The database `airbnb_db` will be created automatically when services start
-
-**Option 2: MongoDB Atlas**
-1. Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. Get your connection string
-3. Update `MONGODB_URI` in all service `.env` files
-
-**Note:** No migrations needed! MongoDB is schema-less. The Mongoose models in `backend/services/shared/models/mongoose/` define the schema structure.
-
-### 4️⃣ Install Dependencies
-
-**Backend Services**
 ```bash
-cd backend
-npm run install:services
+docker-compose up -d
 ```
 
-This installs dependencies for all microservices.
+This builds images (first time) and starts all services: MongoDB, Kafka, Zookeeper, and all microservices.
 
-**Frontend**
+### Step 5: Access the Application
+
+Open http://localhost:3000 in your browser.
+
+**Useful commands:**
 ```bash
-cd frontend
-npm install
+# Check service status
+docker-compose ps
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Stop and remove all data
+docker-compose down -v
 ```
 
-**AI Agent**
+---
+
+## ☸️ Kubernetes Setup (Advanced)
+
+**When to Use:** Required for Lab 2 assignment, production deployment, or learning Kubernetes.
+
+**Note:** In Kubernetes, Kafka runs in a separate `kafka` namespace, while application services run in the `airbnb` namespace. See `DOCKER_KUBERNETES_SETUP.md` for detailed instructions.
+
+**Quick Start:**
 ```bash
-cd agent-backend
-python -m venv venv
-venv\Scripts\activate       # Windows
-# or
-source venv/bin/activate    # macOS/Linux
-pip install -r requirements.txt
+# 1. Start Minikube
+minikube start
+
+# 2. Build and load images
+docker build -f backend/Dockerfile.traveler-service -t airbnb-prototype-traveler-service:latest ./backend
+docker build -f backend/Dockerfile.owner-service -t airbnb-prototype-owner-service:latest ./backend
+docker build -f backend/Dockerfile.property-service -t airbnb-prototype-property-service:latest ./backend
+docker build -f backend/Dockerfile.booking-service -t airbnb-prototype-booking-service:latest ./backend
+docker build -t airbnb-prototype-frontend:latest ./frontend
+
+minikube image load airbnb-prototype-traveler-service:latest
+minikube image load airbnb-prototype-owner-service:latest
+minikube image load airbnb-prototype-property-service:latest
+minikube image load airbnb-prototype-booking-service:latest
+minikube image load airbnb-prototype-frontend:latest
+
+# 3. Deploy (Kafka first, then services)
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secrets.yaml
+kubectl apply -f k8s/persistent-volumes.yaml
+kubectl apply -f k8s/mongodb-statefulset.yaml
+kubectl wait --for=condition=ready pod -l app=mongodb -n airbnb --timeout=300s
+
+kubectl apply -f k8s/kafka-namespace.yaml
+kubectl apply -f k8s/zookeeper-statefulset.yaml
+kubectl wait --for=condition=ready pod -l app=zookeeper -n kafka --timeout=300s
+kubectl apply -f k8s/kafka-statefulset.yaml
+kubectl wait --for=condition=ready pod -l app=kafka -n kafka --timeout=300s
+
+kubectl apply -f k8s/traveler-service.yaml
+kubectl apply -f k8s/owner-service.yaml
+kubectl apply -f k8s/property-service.yaml
+kubectl apply -f k8s/booking-service.yaml
+kubectl apply -f k8s/frontend.yaml
+
+# 4. Access frontend
+kubectl port-forward service/frontend 3000:80 -n airbnb
 ```
 
-### 5️⃣ Run Services
+For detailed instructions, see `DOCKER_KUBERNETES_SETUP.md` and `k8s/README.md`.
 
-#### 🚀 Start All Backend Services (Recommended)
-```bash
-cd backend
-npm run start:services
-```
-
-This starts all 4 microservices simultaneously:
-- Traveler Service: `http://localhost:5001`
-- Owner Service: `http://localhost:5002`
-- Property Service: `http://localhost:5003`
-- Booking Service: `http://localhost:5004`
-
-#### 🔧 Start Services Individually (Alternative)
-
-**Traveler Service**
-```bash
-cd backend/services/traveler-service
-npm run dev
-```
-
-**Owner Service**
-```bash
-cd backend/services/owner-service
-npm run dev
-```
-
-**Property Service**
-```bash
-cd backend/services/property-service
-npm run dev
-```
-
-**Booking Service**
-```bash
-cd backend/services/booking-service
-npm run dev
-```
-
-#### 🤖 AI Agent (Python)
-```bash
-cd agent-backend
-uvicorn main:app --reload --port 5005
-```
-**Runs at** `http://localhost:5005`
-
-#### 💻 Frontend (React)
-```bash
-cd frontend
-npm start
-```
-**Runs at** `http://localhost:3000`
+---
 
 ## 🗂️ Project Structure
 
@@ -220,50 +184,56 @@ npm start
 Airbnb-Prototype/
 ├── backend/
 │   ├── services/
-│   │   ├── traveler-service/    # Traveler authentication, profile, favorites
+│   │   ├── traveler-service/    # Traveler auth, profile, favorites, Kafka producer
 │   │   │   ├── controllers/
 │   │   │   ├── routes/
+│   │   │   ├── kafka/           # Kafka producer for booking requests
 │   │   │   └── server.js
-│   │   ├── owner-service/       # Owner authentication, profile, bookings
+│   │   ├── owner-service/       # Owner auth, profile, bookings, Kafka consumer
 │   │   │   ├── controllers/
 │   │   │   ├── routes/
+│   │   │   ├── kafka/           # Kafka consumer for status updates
 │   │   │   └── server.js
 │   │   ├── property-service/    # Property CRUD, search, photos
 │   │   │   ├── controllers/
 │   │   │   ├── routes/
 │   │   │   └── server.js
-│   │   ├── booking-service/     # Booking creation, management
+│   │   ├── booking-service/     # Booking management, Kafka consumer/producer
 │   │   │   ├── controllers/
 │   │   │   ├── routes/
+│   │   │   ├── kafka/           # Kafka consumer for booking requests
 │   │   │   └── server.js
 │   │   └── shared/              # Shared components
-│   │       ├── models/mongoose/ # Mongoose schemas (Traveler, Owner, Property, Booking, Favorite)
-│   │       ├── middleware/     # Auth, validation middleware
-│   │       └── utils/          # Transform, date utils, service client
-│   ├── config/                 # Configuration files
-│   ├── start-all-services.js   # Service launcher
+│   │       ├── models/mongoose/ # Mongoose schemas
+│   │       ├── middleware/      # Auth, validation middleware
+│   │       ├── kafka/          # Kafka client configuration
+│   │       └── utils/          # Transform, date utils
+│   ├── Dockerfile.*            # Dockerfiles for each service
+│   └── package.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/         # React components
+│   │   ├── store/              # Redux store and slices
+│   │   ├── services/           # API service clients
+│   │   └── utils/             # Utility functions
+│   ├── Dockerfile
 │   └── package.json
 │
 ├── agent-backend/              # AI agent (FastAPI + LangChain)
 │   ├── main.py
 │   ├── requirements.txt
-│   └── .env
+│   └── Dockerfile
 │
-├── frontend/                   # React frontend
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── auth/           # Login/Signup components
-│   │   │   ├── common/         # Shared components
-│   │   │   ├── owner/          # Owner-specific components
-│   │   │   ├── traveler/       # Traveler-specific components
-│   │   │   └── agent/          # AI agent components
-│   │   ├── store/              # Redux store and slices
-│   │   ├── services/           # API service clients
-│   │   └── utils/              # Utility functions
-│   └── package.json
+├── k8s/                       # Kubernetes manifests
+│   ├── *.yaml                 # Deployment, service, config files
+│   └── README.md
 │
+├── docker-compose.yml         # Docker Compose configuration
 └── README.md
 ```
+
+---
 
 ## 🔌 API Overview
 
@@ -298,7 +268,7 @@ Airbnb-Prototype/
 ### Bookings (Booking Service - Port 5004)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/bookings` | Create booking (traveler) |
+| POST | `/api/bookings` | Create booking (via Traveler Service, publishes to Kafka) |
 | GET | `/api/bookings/traveler` | Get traveler bookings |
 | GET | `/api/bookings/property/:propertyId/blocked-dates` | Get blocked dates |
 
@@ -306,9 +276,9 @@ Airbnb-Prototype/
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/bookings/owner` | Get owner bookings |
-| PUT | `/api/bookings/:id/accept` | Accept booking |
-| PUT | `/api/bookings/:id/reject` | Reject booking (treated as cancel) |
-| PUT | `/api/bookings/:id/cancel` | Cancel booking |
+| PUT | `/api/bookings/:id/accept` | Accept booking (publishes to Kafka) |
+| PUT | `/api/bookings/:id/reject` | Reject booking (publishes to Kafka) |
+| PUT | `/api/bookings/:id/cancel` | Cancel booking (publishes to Kafka) |
 
 ### Favorites (Traveler Service - Port 5001)
 | Method | Endpoint | Description |
@@ -324,29 +294,51 @@ Airbnb-Prototype/
 | POST | `/api/agent` | Chat-based AI recommendations |
 | POST | `/agent-button` | Structured responses via FastAPI |
 
+---
+
 ## 🧭 User Journeys
 
 ### Traveler
 1. **Register/Login** → JWT token stored in Redux state
-2. **Browse** → Search and filter properties
+2. **Browse** → Search and filter properties (Redux manages property state)
 3. **Plan** → Use AI agent for itinerary & packing suggestions
-4. **Book** → Make reservations and manage bookings
+4. **Book** → Create booking request (published to Kafka) → Redux updates booking state
 5. **Save** → Add properties to favorites
 6. **Profile** → Update profile and upload photo
 
 ### Owner
 1. **Register/Login** → JWT token stored in Redux state
 2. **List** → Add properties with photos and descriptions
-3. **Manage** → Handle bookings (accept/reject/cancel)
+3. **Manage** → Handle bookings (accept/reject/cancel) → Status updates published to Kafka
 4. **Profile** → Update profile and upload photo
+
+---
 
 ## 🔐 Authentication Flow
 
 1. User registers/logs in via Traveler or Owner service
 2. Service returns JWT token in response
-3. Frontend stores token in Redux state and localStorage
+3. Frontend stores token in Redux state (`authSlice`) and localStorage
 4. Token included in `Authorization: Bearer <token>` header for protected routes
 5. Services verify token using shared `authMiddleware`
+
+---
+
+## 📊 Kafka Event Flow
+
+### Booking Creation Flow
+1. **Traveler creates booking** → Traveler Service receives request
+2. **Traveler Service** → Publishes to `booking-requests` Kafka topic
+3. **Booking Service consumes** → Creates booking in MongoDB
+4. **Booking Service** → Publishes `BOOKING_CREATED` to `booking-status-updates` topic
+5. **Owner/Traveler Services consume** → Update UI via Redux
+
+### Booking Status Updates
+1. **Owner accepts/rejects/cancels** → Owner Service updates database
+2. **Owner Service** → Publishes status update to `booking-status-updates` topic
+3. **Traveler Service consumes** → Updates Redux state → UI reflects change
+
+---
 
 ## 🧪 Testing
 
@@ -355,32 +347,70 @@ Airbnb-Prototype/
 - All endpoints documented with example requests
 - Ensure all services are running before testing
 
-## ⚙️ Common Issues
+**Test Kafka Flow:**
+1. Create a booking as a traveler
+2. Check Booking Service logs: `docker-compose logs -f booking-service`
+3. You should see: "✓ Received booking request from Kafka"
+4. Accept booking as owner
+5. Check Traveler Service logs: `docker-compose logs -f traveler-service`
+6. You should see: "✓ Received status update: BOOKING_ACCEPTED"
+
+---
+
+## ⚙️ Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| Port conflicts | Ensure ports 3000, 5001, 5002, 5003, 5004, 5005 are free |
-| MongoDB connection error | Check `.env` credentials and MongoDB status |
-| Module errors | Reinstall dependencies: `npm run install:services` |
-| JWT errors | Ensure `JWT_SECRET` is set in all service `.env` files |
-| Service not starting | Check individual service logs for errors |
-| CORS errors | Verify `FRONTEND_URL` matches frontend origin in all services |
-| Python venv not activated | Run `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (macOS/Linux) |
+| Docker Desktop not starting | Enable virtualization in BIOS, check system requirements |
+| Port conflicts | Ensure ports 3000, 5001-5005, 27017, 9092, 2181 are free |
+| Services not starting | Check logs: `docker-compose logs <service-name>` |
+| Kafka connection errors | Restart Kafka: `docker-compose restart zookeeper kafka`, wait 30s, then restart services |
+| Build fails | Rebuild: `docker-compose build --no-cache && docker-compose up -d` |
+| Frontend not loading | Verify frontend container: `docker-compose ps frontend` |
+
+**Quick fixes:**
+```bash
+# Check all services
+docker-compose ps
+
+# View logs
+docker-compose logs -f
+
+# Restart everything
+docker-compose down && docker-compose up -d
+```
+
+---
 
 ## 📚 Additional Documentation
 
+- **DOCKER_KUBERNETES_SETUP.md** – Detailed Docker and Kubernetes setup
+- **KAFKA_IMPLEMENTATION_COMPLETE.md** – Kafka integration details
+- **REDUX_DEVTOOLS_SCREENSHOT_GUIDE.md** – Redux DevTools guide
+- **AWS_DEPLOYMENT_GUIDE.md** – AWS deployment instructions
 - **backend/README.md** – Backend API documentation
-- **backend/SETUP_ENV.md** – Environment setup guide
-- **backend/ENV_SETUP_GUIDE.md** – Detailed environment configuration
-- **LAB2_IMPLEMENTATION_PLAN.md** – Lab 2 implementation roadmap
-- **Postman Collection** – API testing suite
+- **k8s/README.md** – Kubernetes deployment guide
 
-## 🎯 Next Steps (Lab 2)
+---
 
-- [ ] Docker containerization
-- [ ] Kubernetes deployment
-- [ ] Kafka integration for async messaging
+## 🎯 Next Steps
+
+- [x] Docker containerization
+- [x] Kubernetes deployment
+- [x] Kafka integration for async messaging
+- [x] Redux state management
 - [ ] AWS deployment
+- [ ] JMeter performance testing
+- [ ] CI/CD pipeline
+
+---
+
+## 📝 Notes
+
+- **Docker Compose** is recommended for local development
+- **Kubernetes** is required for Lab 2 assignment and production
+- **Kafka** handles asynchronous booking messaging
+- **Redux** manages frontend state (auth, properties, bookings)
 
 ---
 
