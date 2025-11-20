@@ -117,14 +117,32 @@ const PropertyForm = ({ onPropertyCreated }) => {
       // Convert selected amenities array to comma-separated string
       const amenitiesString = selectedAmenities.join(', ');
 
+      // Helper function to safely parse integers with minimum value
+      const safeParseInt = (value, defaultValue = 0, min = 0) => {
+        const parsed = parseInt(value);
+        if (isNaN(parsed) || parsed < min) {
+          return defaultValue;
+        }
+        return parsed;
+      };
+
+      // Helper function to safely parse floats with minimum value
+      const safeParseFloat = (value, defaultValue = 0, min = 0) => {
+        const parsed = parseFloat(value);
+        if (isNaN(parsed) || parsed < min) {
+          return defaultValue;
+        }
+        return parsed;
+      };
+
       // Convert string values to appropriate types
       const propertyData = {
         ...formData,
         amenities: amenitiesString,
-        price: parseFloat(formData.price) || 0,
-        bedrooms: parseInt(formData.bedrooms) || 0,
-        bathrooms: parseInt(formData.bathrooms) || 0,
-        maxGuests: parseInt(formData.maxGuests) || 1
+        price: safeParseFloat(formData.price, 0, 0),
+        bedrooms: safeParseInt(formData.bedrooms, 0, 0),
+        bathrooms: safeParseInt(formData.bathrooms, 0, 0),
+        maxGuests: safeParseInt(formData.maxGuests, 1, 1)
       };
       
       

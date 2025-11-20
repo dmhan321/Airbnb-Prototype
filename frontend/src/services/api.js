@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 // Service URLs - can be configured via environment variables
+// In production (AWS), these use relative URLs that go through nginx proxy
+// In development, these can be set to localhost URLs
 const SERVICES = {
-  traveler: process.env.REACT_APP_TRAVELER_SERVICE_URL || 'http://localhost:5001/api',
-  owner: process.env.REACT_APP_OWNER_SERVICE_URL || 'http://localhost:5002/api',
-  property: process.env.REACT_APP_PROPERTY_SERVICE_URL || 'http://localhost:5003/api',
-  booking: process.env.REACT_APP_BOOKING_SERVICE_URL || 'http://localhost:5004/api'
+  traveler: process.env.REACT_APP_TRAVELER_SERVICE_URL || '/api/traveler',
+  owner: process.env.REACT_APP_OWNER_SERVICE_URL || '/api/owner',
+  property: process.env.REACT_APP_PROPERTY_SERVICE_URL || '/api/property',
+  booking: process.env.REACT_APP_BOOKING_SERVICE_URL || '/api/booking'
 };
 
 // Create axios instances for each service

@@ -9,11 +9,13 @@ const getBaseServiceUrl = (url) => {
   return url.replace(/\/api\/?$/, '');
 };
 
+// In production (AWS), use relative URLs that go through nginx proxy
+// In development, these can be set to localhost URLs
 const SERVICES = {
-  traveler: getBaseServiceUrl(process.env.REACT_APP_TRAVELER_SERVICE_URL) || 'http://localhost:5001',
-  owner: getBaseServiceUrl(process.env.REACT_APP_OWNER_SERVICE_URL) || 'http://localhost:5002',
-  property: getBaseServiceUrl(process.env.REACT_APP_PROPERTY_SERVICE_URL) || 'http://localhost:5003',
-  booking: getBaseServiceUrl(process.env.REACT_APP_BOOKING_SERVICE_URL) || 'http://localhost:5004'
+  traveler: getBaseServiceUrl(process.env.REACT_APP_TRAVELER_SERVICE_URL) || '',
+  owner: getBaseServiceUrl(process.env.REACT_APP_OWNER_SERVICE_URL) || '',
+  property: getBaseServiceUrl(process.env.REACT_APP_PROPERTY_SERVICE_URL) || '',
+  booking: getBaseServiceUrl(process.env.REACT_APP_BOOKING_SERVICE_URL) || ''
 };
 
 // Legacy backend URL (for old photos)
@@ -28,25 +30,60 @@ const LEGACY_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhos
 export const getImageUrl = (imagePath) => {
   if (!imagePath) return '';
   
-  // Convert Kubernetes service names to localhost (for port-forward access)
-  if (imagePath.includes('property-service:5003')) {
-    const fixed = imagePath.replace(/property-service:5003/g, 'http://localhost:5003');
-    if (!fixed.startsWith('http://') && !fixed.startsWith('https://')) {
-      return 'http://' + fixed;
+  // FIRST: Convert full URLs (http:// or https://) to relative paths
+  // This must be checked first before other pattern matching
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    // Extract the path part from full URLs (e.g., http://domain.com/uploads/... -> /uploads/...)
+    const urlMatch = imagePath.match(/https?:\/\/[^\/]+(\/.*)/);
+    if (urlMatch) {
+      return urlMatch[1]; // Return just the path part (e.g., /uploads/property-photos/...)
     }
-    return fixed;
+    // If no path found, return as-is (shouldn't happen)
+    return imagePath;
+  }
+  
+  // Convert Kubernetes service names to relative paths
+  if (imagePath.includes('property-service:5003')) {
+    // Extract the path part and make it relative
+    const pathMatch = imagePath.match(/property-service:5003(\/.*)/);
+    if (pathMatch) {
+      return pathMatch[1]; // Return the path part (e.g., /uploads/property-photos/...)
+    }
+    return imagePath.replace(/.*property-service:5003/, '');
   }
   if (imagePath.includes('traveler-service:5001')) {
-    if (imagePath.startsWith('traveler-service:5001')) {
-      return 'http://localhost:5001' + imagePath.substring('traveler-service:5001'.length);
+    const pathMatch = imagePath.match(/traveler-service:5001(\/.*)/);
+    if (pathMatch) {
+      return pathMatch[1];
     }
-    return imagePath.replace(/traveler-service:5001/g, 'localhost:5001').replace(/^([^h])/, 'http://$1');
+    return imagePath.replace(/.*traveler-service:5001/, '');
   }
   if (imagePath.includes('owner-service:5002')) {
-    if (imagePath.startsWith('owner-service:5002')) {
-      return 'http://localhost:5002' + imagePath.substring('owner-service:5002'.length);
+    const pathMatch = imagePath.match(/owner-service:5002(\/.*)/);
+    if (pathMatch) {
+      return pathMatch[1];
     }
-    return imagePath.replace(/owner-service:5002/g, 'localhost:5002').replace(/^([^h])/, 'http://$1');
+    return imagePath.replace(/.*owner-service:5002/, '');
+  }
+  
+  // Convert full URLs with localhost to relative paths
+  if (imagePath.includes('localhost:5003') && imagePath.includes('/uploads/')) {
+    const pathMatch = imagePath.match(/localhost:5003(\/.*)/);
+    if (pathMatch) {
+      return pathMatch[1];
+    }
+  }
+  if (imagePath.includes('localhost:5001') && imagePath.includes('/uploads/')) {
+    const pathMatch = imagePath.match(/localhost:5001(\/.*)/);
+    if (pathMatch) {
+      return pathMatch[1];
+    }
+  }
+  if (imagePath.includes('localhost:5002') && imagePath.includes('/uploads/')) {
+    const pathMatch = imagePath.match(/localhost:5002(\/.*)/);
+    if (pathMatch) {
+      return pathMatch[1];
+    }
   }
   
   // Handle malformed URLs that start with :5000 (missing protocol/host)
@@ -92,56 +129,29 @@ export const getImageUrl = (imagePath) => {
     }
   }
   
-  // Fix full URLs with Kubernetes service names or wrong ports
-  if (imagePath.startsWith('http')) {
-    if (imagePath.includes('property-service:5003')) {
-      return imagePath.replace(/http:\/\/property-service:5003/g, 'http://localhost:5003');
-    }
-    if (imagePath.includes('traveler-service:5001')) {
-      return imagePath.replace(/http:\/\/traveler-service:5001/g, 'http://localhost:5001');
-    }
-    if (imagePath.includes('owner-service:5002')) {
-      return imagePath.replace(/http:\/\/owner-service:5002/g, 'http://localhost:5002');
-    }
-    // Fix wrong port for property photos
-    if (imagePath.includes(':5000') && imagePath.includes('/uploads/property-photos')) {
-      return imagePath.replace(/localhost:5000/g, 'localhost:5003').replace(/:5000/g, ':5003');
-    }
-    // Fix wrong port for profile pictures
-    if (imagePath.includes(':5000') && imagePath.includes('/uploads/profile-pictures')) {
-      return imagePath.replace(/localhost:5000/g, 'localhost:5001').replace(/:5000/g, ':5001');
-    }
-    // Fix any other :5000 references (default to property service)
-    if (imagePath.includes(':5000')) {
-      return imagePath.replace(/localhost:5000/g, 'localhost:5003').replace(/:5000/g, ':5003');
-    }
+  // Handle bare filenames (property-*.png, property-*.jpg)
+  if (imagePath.match(/^property-\d+-\d+\.(png|jpg|jpeg|gif|webp)$/i)) {
+    return `/uploads/property-photos/${imagePath}`;
+  }
+  if (imagePath.match(/^property-.*\.(png|jpg|jpeg|gif|webp)$/i) && !imagePath.includes('/')) {
+    return `/uploads/property-photos/${imagePath}`;
+  }
+  
+  // For relative paths, use relative URLs (nginx will proxy them)
+  // If it starts with '/', use it as-is (already a relative path)
+  if (imagePath.startsWith('/')) {
     return imagePath;
   }
   
-  // Handle bare filenames (property-*.png, property-*.jpg)
-  if (imagePath.match(/^property-\d+-\d+\.(png|jpg|jpeg|gif|webp)$/i)) {
-    return `${SERVICES.property}/uploads/property-photos/${imagePath}`;
-  }
-  if (imagePath.match(/^property-.*\.(png|jpg|jpeg|gif|webp)$/i) && !imagePath.includes('/')) {
-    return `${SERVICES.property}/uploads/property-photos/${imagePath}`;
-  }
-  
-  // For relative paths, determine the service
-  let serviceUrl = SERVICES.property; // Default to property service
-  
+  // Determine service based on path content
   if (imagePath.includes('profile-pictures') || imagePath.includes('profile')) {
-    serviceUrl = SERVICES.traveler;
+    return `/uploads/profile-pictures/${imagePath}`;
   } else if (imagePath.includes('property-photos') || imagePath.includes('property')) {
-    serviceUrl = SERVICES.property;
+    return `/uploads/property-photos/${imagePath}`;
   }
   
-  // If it starts with '/', prepend service URL
-  if (imagePath.startsWith('/')) {
-    return `${serviceUrl}${imagePath}`;
-  }
-  
-  // Otherwise, assume it's a relative path and prepend service URL with '/'
-  return `${serviceUrl}/${imagePath}`;
+  // Default to property photos
+  return `/uploads/property-photos/${imagePath}`;
 };
 
 /**

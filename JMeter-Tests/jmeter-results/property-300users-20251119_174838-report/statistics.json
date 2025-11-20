@@ -1,0 +1,34 @@
+{
+  "Get All Properties" : {
+    "transaction" : "Get All Properties",
+    "sampleCount" : 1500,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 1018.2899999999992,
+    "medianResTime" : 866.0,
+    "minResTime" : 55.0,
+    "maxResTime" : 4946.0,
+    "pct1ResTime" : 2203.9,
+    "pct2ResTime" : 2691.8500000000004,
+    "pct3ResTime" : 3443.79,
+    "throughput" : 29.380080305552838,
+    "receivedKBytesPerSec" : 78.49990206639899,
+    "sentKBytesPerSec" : 5.56614802663794
+  },
+  "Total" : {
+    "transaction" : "Total",
+    "sampleCount" : 1500,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 1018.2899999999992,
+    "medianResTime" : 866.0,
+    "minResTime" : 55.0,
+    "maxResTime" : 4946.0,
+    "pct1ResTime" : 2203.9,
+    "pct2ResTime" : 2691.8500000000004,
+    "pct3ResTime" : 3443.79,
+    "throughput" : 29.380080305552838,
+    "receivedKBytesPerSec" : 78.49990206639899,
+    "sentKBytesPerSec" : 5.56614802663794
+  }
+}

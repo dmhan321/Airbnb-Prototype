@@ -25,14 +25,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static files for uploads
-// Serve from service-specific directory first, then fallback to legacy location
+// Use persistent volume mount path if available, otherwise fallback to relative paths
+const UPLOADS_BASE_DIR = process.env.UPLOADS_DIR || '/app/uploads';
 const serviceUploadsDir = path.join(__dirname, 'uploads');
 const legacyUploadsDir = path.join(__dirname, '../../uploads');
 
 app.use('/uploads', (req, res, next) => {
   const filePath = req.path.replace('/uploads/', '');
   
-  // Try service directory first
+  // Try persistent volume mount first (for Kubernetes)
+  const persistentFile = path.join(UPLOADS_BASE_DIR, filePath);
+  if (fs.existsSync(persistentFile)) {
+    return res.sendFile(persistentFile, (err) => {
+      if (err) {
+        console.error('Error sending file:', err);
+        next(err);
+      }
+    });
+  }
+  
+  // Try service directory
   const serviceFile = path.join(serviceUploadsDir, filePath);
   if (fs.existsSync(serviceFile)) {
     return res.sendFile(serviceFile, (err) => {
@@ -43,6 +55,7 @@ app.use('/uploads', (req, res, next) => {
     });
   }
   
+  // Try legacy directory
   const legacyFile = path.join(legacyUploadsDir, filePath);
   if (fs.existsSync(legacyFile)) {
     return res.sendFile(legacyFile, (err) => {

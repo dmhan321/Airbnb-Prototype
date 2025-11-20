@@ -29,8 +29,8 @@ spec:
     spec:
       containers:
       - name: traveler-service
-        image: airbnb-prototype-traveler-service:latest
-        imagePullPolicy: Never
+        image: 982534379272.dkr.ecr.us-west-2.amazonaws.com/airbnb-lab2-repo:traveler-service
+        imagePullPolicy: Always
         ports:
         - containerPort: 5001
           name: http
@@ -39,8 +39,8 @@ spec:
           value: "5001"
         - name: MONGODB_URI
           valueFrom:
-            configMapKeyRef:
-              name: airbnb-config
+            secretKeyRef:
+              name: airbnb-secrets
               key: MONGODB_URI
         - name: JWT_SECRET
           valueFrom:
@@ -77,6 +77,8 @@ spec:
             configMapKeyRef:
               name: airbnb-config
               key: PUBLIC_TRAVELER_SERVICE_URL
+        - name: UPLOADS_DIR
+          value: "/app/uploads"
         resources:
           requests:
             memory: "256Mi"

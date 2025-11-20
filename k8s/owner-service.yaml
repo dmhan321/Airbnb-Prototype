@@ -29,8 +29,8 @@ spec:
     spec:
       containers:
       - name: owner-service
-        image: airbnb-prototype-owner-service:latest
-        imagePullPolicy: Never
+        image: 982534379272.dkr.ecr.us-west-2.amazonaws.com/airbnb-lab2-repo:owner-service
+        imagePullPolicy: Always
         ports:
         - containerPort: 5002
           name: http
@@ -39,8 +39,8 @@ spec:
           value: "5002"
         - name: MONGODB_URI
           valueFrom:
-            configMapKeyRef:
-              name: airbnb-config
+            secretKeyRef:
+              name: airbnb-secrets
               key: MONGODB_URI
         - name: JWT_SECRET
           valueFrom:

@@ -5,9 +5,11 @@ const path = require('path');
 const fs = require('fs');
 
 // Configure multer for property photo uploads
+// Use persistent volume mount path if available, otherwise fallback to relative path
+const UPLOADS_BASE_DIR = process.env.UPLOADS_DIR || '/app/uploads';
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../uploads/property-photos');
+    const uploadDir = path.join(UPLOADS_BASE_DIR, 'property-photos');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }

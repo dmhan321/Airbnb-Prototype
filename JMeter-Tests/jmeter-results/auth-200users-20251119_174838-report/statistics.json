@@ -1,0 +1,34 @@
+{
+  "Login Traveler" : {
+    "transaction" : "Login Traveler",
+    "sampleCount" : 200,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 284.88,
+    "medianResTime" : 271.5,
+    "minResTime" : 190.0,
+    "maxResTime" : 478.0,
+    "pct1ResTime" : 359.8,
+    "pct2ResTime" : 408.84999999999997,
+    "pct3ResTime" : 454.97,
+    "throughput" : 6.661781360335754,
+    "receivedKBytesPerSec" : 6.205865698487776,
+    "sentKBytesPerSec" : 2.2279234811138497
+  },
+  "Total" : {
+    "transaction" : "Total",
+    "sampleCount" : 200,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 284.88,
+    "medianResTime" : 271.5,
+    "minResTime" : 190.0,
+    "maxResTime" : 478.0,
+    "pct1ResTime" : 359.8,
+    "pct2ResTime" : 408.84999999999997,
+    "pct3ResTime" : 454.97,
+    "throughput" : 6.661781360335754,
+    "receivedKBytesPerSec" : 6.205865698487776,
+    "sentKBytesPerSec" : 2.2279234811138497
+  }
+}

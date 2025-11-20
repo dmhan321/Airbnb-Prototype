@@ -13,10 +13,12 @@ const { requireAuth, requireTraveler, getCurrentUser } = require('../../shared/m
 // Multer Setup for Profile Pics
 // ==============================
 const fs = require('fs');
+// Use persistent volume mount path if available, otherwise fallback to relative path
+const UPLOADS_BASE_DIR = process.env.UPLOADS_DIR || '/app/uploads';
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Save to profile-pictures subdirectory to match the URL structure
-    const uploadDir = path.join(__dirname, '../uploads/profile-pictures');
+    const uploadDir = path.join(UPLOADS_BASE_DIR, 'profile-pictures');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }

@@ -29,8 +29,8 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: airbnb-prototype-frontend:latest
-        imagePullPolicy: IfNotPresent
+        image: 982534379272.dkr.ecr.us-west-2.amazonaws.com/airbnb-lab2-repo:frontend
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
           name: http
