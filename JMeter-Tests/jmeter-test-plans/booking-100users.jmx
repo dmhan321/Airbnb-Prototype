@@ -6,10 +6,10 @@
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
-      <stringProp name="TestPlan.user_define_classpath"/>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
         <stringProp name="HTTPSampler.domain">af859bf4c90fe45a8a617d2337fe265b-73469934.us-west-2.elb.amazonaws.com</stringProp>
         <stringProp name="HTTPSampler.protocol">http</stringProp>
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
@@ -29,6 +29,31 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="startDay" elementType="Argument">
+              <stringProp name="Argument.name">startDay</stringProp>
+              <stringProp name="Argument.value">${__jexl3(1 + ((${__threadNum} - 1) * 5) % 30,)}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="endDay" elementType="Argument">
+              <stringProp name="Argument.name">endDay</stringProp>
+              <stringProp name="Argument.value">${__jexl3(startDay + 4,)}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="guests" elementType="Argument">
+              <stringProp name="Argument.name">guests</stringProp>
+              <stringProp name="Argument.value">${__jexl3(((${__threadNum} % 4) + 1),)}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="threadNum" elementType="Argument">
+              <stringProp name="Argument.name">threadNum</stringProp>
+              <stringProp name="Argument.value">${__threadNum}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login for Booking" enabled="true">
           <stringProp name="HTTPSampler.path">/api/traveler/auth/login</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -40,9 +65,9 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{
-  "email": "traveler${__threadNum}@test.com",
-  "password": "testpassword123",
-  "userType": "traveler"
+  &quot;email&quot;: &quot;traveler${__threadNum}@test.com&quot;,
+  &quot;password&quot;: &quot;testpassword123&quot;,
+  &quot;userType&quot;: &quot;traveler&quot;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
@@ -64,8 +89,19 @@
             <stringProp name="JSONPostProcessor.referenceName">token</stringProp>
             <stringProp name="JSONPostProcessor.jsonPathExpr">$.token</stringProp>
             <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
-            <stringProp name="JSONPostProcessor.defaultValues"/>
+            <stringProp name="JSONPostProcessor.referenceNames"></stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs"></stringProp>
           </JSONPostProcessor>
+          <hashTree/>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract Token (Backup)" enabled="true">
+            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+            <stringProp name="RegexExtractor.refname">token_backup</stringProp>
+            <stringProp name="RegexExtractor.regex">&quot;token&quot;\s*:\s*&quot;([^&quot;]+)&quot;</stringProp>
+            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.default"></stringProp>
+            <stringProp name="RegexExtractor.match_number">1</stringProp>
+            <boolProp name="RegexExtractor.default_empty_value">false</boolProp>
+          </RegexExtractor>
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Properties for Booking" enabled="true">
@@ -79,13 +115,23 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract Property ID" enabled="true">
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Property ID" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceName">propertyId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExpr">$.properties[0].id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+            <stringProp name="JSONPostProcessor.defaultValues">691e1bdec5154918afb283d9</stringProp>
+            <stringProp name="JSONPostProcessor.referenceNames">propertyId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.properties[0].id</stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract Property ID (Backup)" enabled="true">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-            <stringProp name="RegexExtractor.refname">propertyId</stringProp>
-            <stringProp name="RegexExtractor.regex">"_id":"([^"]+)"</stringProp>
+            <stringProp name="RegexExtractor.refname">propertyId_backup</stringProp>
+            <stringProp name="RegexExtractor.regex">&quot;id&quot;\s*:\s*&quot;([^&quot;]+)&quot;</stringProp>
             <stringProp name="RegexExtractor.template">$1$</stringProp>
-            <stringProp name="RegexExtractor.default"/>
+            <stringProp name="RegexExtractor.default"></stringProp>
             <stringProp name="RegexExtractor.match_number">1</stringProp>
+            <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
           </RegexExtractor>
           <hashTree/>
         </hashTree>
@@ -100,10 +146,10 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{
-  "propertyId": "${propertyId}",
-  "startDate": "2025-12-01",
-  "endDate": "2025-12-05",
-  "guests": 2
+  &quot;propertyId&quot;: &quot;${propertyId}&quot;,
+  &quot;startDate&quot;: &quot;${startDateFinal}&quot;,
+  &quot;endDate&quot;: &quot;${endDateFinal}&quot;,
+  &quot;guests&quot;: ${guests}
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
@@ -112,6 +158,68 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Build Date Strings" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// Get thread number
+def threadNum = ctx.getThreadNum()
+
+// Simple: Each user books 1 night starting from 2026-01-01
+// Thread 1: Jan 1-2, Thread 2: Jan 2-3, Thread 3: Jan 3-4, etc.
+
+def year = 2026
+def month = 1  // Start in January
+def startDayInt = threadNum  // Day 1, 2, 3, etc.
+
+// Days per month (2026 is NOT a leap year)
+def daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+// Calculate which month and day based on thread number
+def dayCounter = threadNum
+def currentMonth = 0  // 0-indexed (0 = January)
+
+while (dayCounter &gt; daysInMonth[currentMonth]) {
+  dayCounter -= daysInMonth[currentMonth]
+  currentMonth++
+  if (currentMonth &gt;= 12) {
+    // Move to next year (shouldn&apos;t happen with 100 threads, but handle it)
+    year++
+    currentMonth = 0
+  }
+}
+
+month = currentMonth + 1  // Convert to 1-indexed
+startDayInt = dayCounter
+
+// End day is start day + 1 (1 night booking)
+def endDayInt = startDayInt + 1
+def endMonth = month
+def endYear = year
+
+// Check if end day exceeds current month
+if (endDayInt &gt; daysInMonth[currentMonth]) {
+  // Move to next month
+  endDayInt = 1
+  endMonth = month + 1
+  if (endMonth &gt; 12) {
+    endMonth = 1
+    endYear = year + 1
+  }
+}
+
+// Format with zero-padding
+def startDayStr = String.format(&quot;%02d&quot;, startDayInt)
+def endDayStr = String.format(&quot;%02d&quot;, endDayInt)
+def monthStr = String.format(&quot;%02d&quot;, month)
+def endMonthStr = String.format(&quot;%02d&quot;, endMonth)
+
+// Create final date strings
+vars.put(&quot;startDateFinal&quot;, year + &quot;-&quot; + monthStr + &quot;-&quot; + startDayStr)
+vars.put(&quot;endDateFinal&quot;, endYear + &quot;-&quot; + endMonthStr + &quot;-&quot; + endDayStr)</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
           <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
@@ -120,12 +228,11 @@
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Authorization</stringProp>
-                <stringProp name="Header.value">Bearer ${token}</stringProp>
+                <stringProp name="Header.value">Bearer ${token_backup}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-        </hashTree>
         <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
@@ -140,27 +247,27 @@
               <message>true</message>
               <threadName>true</threadName>
               <dataType>true</dataType>
+              <encoding>false</encoding>
               <assertions>true</assertions>
               <subresults>true</subresults>
+              <responseData>true</responseData>
+              <samplerData>true</samplerData>
+              <xml>false</xml>
               <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
               <bytes>true</bytes>
               <sentBytes>true</sentBytes>
               <url>true</url>
               <threadCounts>true</threadCounts>
               <idleTime>true</idleTime>
               <connectTime>true</connectTime>
-              <encoding>false</encoding>
-              <responseData>false</responseData>
-              <samplerData>false</samplerData>
-              <xml>false</xml>
-              <responseHeaders>false</responseHeaders>
-              <requestHeaders>false</requestHeaders>
-              <responseDataOnError>false</responseDataOnError>
-              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
-              <assertionsResultsToSave>0</assertionsResultsToSave>
             </value>
           </objProp>
-          <stringProp name="filename"/>
+          <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
