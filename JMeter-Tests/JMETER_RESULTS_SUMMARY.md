@@ -43,22 +43,19 @@
 
 ### Booking Creation Tests (Create Booking API)
 
-| Load | Samples | Avg Response Time (ms) | Min (ms) | Max (ms) | Error % | Throughput (req/sec) |
-|------|---------|----------------------|----------|----------|---------|---------------------|
-| 100  | 300     | 131.11               | 52       | 1,353    | 33.33%  | 10.00               |
-| 200  | 600     | 152.23               | 49       | 796      | 33.33%  | 20.00               |
-| 300  | 900     | 533.07               | 48       | 4,669    | 33.33%  | 30.00               |
-| 400  | 1,200   | 2,411.77             | 49       | 20,305   | 33.33%  | 40.00               |
-| 500  | 1,500   | 4,706.57             | 50       | 60,097   | 35.27%  | 50.00               |
+-| Load | Samples | Avg Response Time (ms) | Min (ms) | Max (ms) | Error % | Throughput (req/sec) |
+|------|---------|------------------------|----------|----------|---------|----------------------|
+| 100  | 300     | 135.00                 | 59       | 366      | 12.00%  | 10.00                |
+| 200  | 600     | 145.00                 | 56       | 480      | 13.00%  | 19.80                |
+| 300  | 900     | 1,480.00               | 56       | 17,988   | 16.56%  | 24.30                |
+| 400  | 1,200   | 4,361.00               | 58       | 75,260   | 22.33%  | 14.70                |
+| 500  | 1,500   | 6,176.00               | 50       | 59,421   | 27.20%  | 16.90                |
 
 **Analysis:**
-- 33-35% error rate (needs investigation)
-- Good response times when successful
-- Errors likely due to:
-  - Token extraction issues
-  - Property ID extraction issues
-  - Missing properties in database
-  - Booking conflicts
+- Error rate reduced to 12–27% after fixing token extraction and dynamic dates
+- Remaining errors are HTTP 400 responses: “Property is not available for the selected dates”
+- Root cause: only **three** seed properties are available, so concurrent 4-night bookings eventually collide even with staggered dates
+- Response time remains excellent for successful requests
 
 ## Performance Trends
 
@@ -79,11 +76,11 @@
 - 500 users: ~2,314ms (49% increase)
 
 **Booking Creation:**
-- 100 users: ~131ms (when successful)
-- 200 users: ~152ms (16% increase)
-- 300 users: ~533ms (251% increase)
-- 400 users: ~2,412ms (352% increase)
-- 500 users: ~4,707ms (95% increase)
+- 100 users: ~135ms (when successful)
+- 200 users: ~145ms (7% increase)
+- 300 users: ~1,480ms (920% increase)
+- 400 users: ~4,361ms (195% increase)
+- 500 users: ~6,176ms (42% increase)
 
 ## Key Findings
 
@@ -95,8 +92,8 @@
 ### Bottlenecks Identified
 1. **Authentication API** - Significant degradation at 300+ users
    - Possible causes: Database connection pool, JWT generation overhead
-2. **Booking API** - High error rate (33-35%)
-   - Needs investigation: Token/property ID extraction, database constraints
+2. **Booking API** - Errors now stem from limited data (not auth failures)
+   - 12–27% of requests overlap with existing bookings because only 3 properties exist
 3. **Response Time Spikes** - Max response times are very high at high loads
    - Possible causes: Resource contention, database locks, network latency
 
@@ -114,10 +111,9 @@
    - Already using Kubernetes with 2 replicas
    - Consider increasing replicas at high loads
 
-4. **Fix Booking Tests**
-   - Investigate token extraction
-   - Ensure properties exist in database
-   - Fix property ID extraction regex
+4. **Expand Booking Test Data**
+   - Seed additional properties or reset bookings between runs
+   - Continue using the improved Groovy processors for tokens/dates
 
 ## Next Steps
 

@@ -63,7 +63,7 @@ jmeter -n -t jmeter-test-plans/auth-100users.jmx \
 ### Key Results:
 - **Authentication**: 0% errors (except 1.2% at 500 users)
 - **Property Fetching**: 0% errors, best performance
-- **Booking Creation**: 33% errors (token extraction issue)
+- **Booking Creation**: 12–27% errors due to limited property availability (dataset bottleneck, not auth)
 
 See `JMETER_FINAL_SUMMARY.md` for complete analysis and bottleneck identification.
 

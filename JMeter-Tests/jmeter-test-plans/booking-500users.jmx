@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Booking Creation Test - 500 Users" enabled="true">
@@ -6,18 +5,18 @@
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
-      <stringProp name="TestPlan.user_define_classpath"/>
+      <stringProp name="TestPlan.user_define_classpath" />
     </TestPlan>
     <hashTree>
       <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
         <stringProp name="HTTPSampler.domain">af859bf4c90fe45a8a617d2337fe265b-73469934.us-west-2.elb.amazonaws.com</stringProp>
         <stringProp name="HTTPSampler.protocol">http</stringProp>
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-          <collectionProp name="Arguments.arguments"/>
+          <collectionProp name="Arguments.arguments" />
         </elementProp>
         <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
       </ConfigTestElement>
-      <hashTree/>
+      <hashTree />
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Booking Creation Test - 500 Users" enabled="true">
         <intProp name="ThreadGroup.num_threads">500</intProp>
         <intProp name="ThreadGroup.ramp_time">30</intProp>
@@ -59,15 +58,15 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree/>
-          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract token" enabled="true">
-            <stringProp name="JSONPostProcessor.referenceName">token</stringProp>
-            <stringProp name="JSONPostProcessor.jsonPathExpr">$.token</stringProp>
-            <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
-            <stringProp name="JSONPostProcessor.defaultValues"/>
-          </JSONPostProcessor>
-          <hashTree/>
-        </hashTree>
+          <hashTree />
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Extract token (Groovy)" enabled="true"><stringProp name="scriptLanguage">groovy</stringProp><stringProp name="parameters" /><stringProp name="script">import groovy.json.JsonSlurper
+try {
+  def json = new JsonSlurper().parseText(prev.getResponseDataAsString())
+  vars.put('token', json.token ?: '')
+} catch (Exception ex) {
+  log.error('Failed to parse token', ex)
+  vars.put('token', '')
+}</stringProp></JSR223PostProcessor><hashTree /></hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Properties for Booking" enabled="true">
           <stringProp name="HTTPSampler.path">/api/property/properties</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -75,7 +74,7 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
-            <collectionProp name="Arguments.arguments"/>
+            <collectionProp name="Arguments.arguments" />
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
@@ -84,11 +83,46 @@
             <stringProp name="RegexExtractor.refname">propertyId</stringProp>
             <stringProp name="RegexExtractor.regex">"_id":"([^"]+)"</stringProp>
             <stringProp name="RegexExtractor.template">$1$</stringProp>
-            <stringProp name="RegexExtractor.default"/>
+            <stringProp name="RegexExtractor.default" />
             <stringProp name="RegexExtractor.match_number">1</stringProp>
           </RegexExtractor>
-          <hashTree/>
-        </hashTree>
+          <hashTree />
+        <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Process Properties" enabled="true"><stringProp name="scriptLanguage">groovy</stringProp><stringProp name="parameters" /><stringProp name="script">import groovy.json.JsonSlurper
+import java.time.LocalDate
+import java.time.ZoneOffset
+
+def data
+try {
+  data = new JsonSlurper().parseText(prev.getResponseDataAsString())
+} catch (Exception ex) {
+  log.error('Process Properties: failed to parse response', ex)
+  vars.put('propertyId', '')
+  def fallback = LocalDate.now(ZoneOffset.UTC).plusDays(30)
+  vars.put('startDate', fallback.toString())
+  vars.put('endDate', fallback.plusDays(4).toString())
+  return
+}
+def props = data.properties ?: data.data ?: []
+if (props.isEmpty()) {
+  log.warn('Process Properties: no properties returned')
+  vars.put('propertyId', '')
+  def fallback = LocalDate.now(ZoneOffset.UTC).plusDays(30)
+  vars.put('startDate', fallback.toString())
+  vars.put('endDate', fallback.plusDays(4).toString())
+  return
+}
+def threadIndex = ctx.getThreadNum()
+def propIndex = threadIndex % props.size()
+def sequenceIndex = (int)(threadIndex / props.size())
+def prop = props[propIndex]
+def propId = prop.id ?: prop._id ?: ''
+vars.put('propertyId', propId.toString())
+
+def runOffset = (System.currentTimeMillis() % 1000L) as int
+def baseStart = LocalDate.now(ZoneOffset.UTC).plusDays(30 + sequenceIndex * 10 + propIndex + runOffset)
+vars.put('startDate', baseStart.toString())
+vars.put('endDate', baseStart.plusDays(4).toString())
+log.info('Process Properties: thread=' + threadIndex + ', property=' + propId + ', start=' + vars.get('startDate'))</stringProp></JSR223PostProcessor><hashTree /></hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create Booking" enabled="true">
           <stringProp name="HTTPSampler.path">/api/booking/bookings</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -101,8 +135,8 @@
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{
   "propertyId": "${propertyId}",
-  "startDate": "2025-12-01",
-  "endDate": "2025-12-05",
+  "startDate": "${startDate}",
+  "endDate": "${endDate}",
   "guests": 2
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
@@ -124,7 +158,7 @@
               </elementProp>
             </collectionProp>
           </HeaderManager>
-          <hashTree/>
+          <hashTree />
         </hashTree>
         <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
@@ -160,9 +194,9 @@
               <assertionsResultsToSave>0</assertionsResultsToSave>
             </value>
           </objProp>
-          <stringProp name="filename"/>
+          <stringProp name="filename" />
         </ResultCollector>
-        <hashTree/>
+        <hashTree />
       </hashTree>
     </hashTree>
   </hashTree>

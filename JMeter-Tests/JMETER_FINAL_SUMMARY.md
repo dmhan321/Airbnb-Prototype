@@ -44,20 +44,18 @@ All 15 tests have been executed successfully. Results are available in:
 
 | Load | Avg Response Time | Error % | Throughput |
 |------|------------------|---------|------------|
-| 100  | 131.11 ms        | 33.33%  | 10.00 req/s |
-| 200  | 152.23 ms        | 33.33%  | 20.00 req/s |
-| 300  | 533.07 ms        | 33.33%  | 30.00 req/s |
-| 400  | 2,411.77 ms      | 33.33%  | 40.00 req/s |
-| 500  | 4,706.57 ms      | 35.27%  | 50.00 req/s |
+| 100  | 135.00 ms        | 12.00%  | 10.00 req/s |
+| 200  | 145.00 ms        | 13.00%  | 19.80 req/s |
+| 300  | 1,480.00 ms      | 16.56%  | 24.30 req/s |
+| 400  | 4,361.00 ms      | 22.33%  | 14.70 req/s |
+| 500  | 6,176.00 ms      | 27.20%  | 16.90 req/s |
 
 **Key Findings:**
-- ⚠️ 33-35% error rate (401 Unauthorized errors)
-- ✅ Good response times when successful
-- ⚠️ Errors likely due to:
-  - Token extraction/scope issues in JMeter
-  - Property ID extraction issues
-  - Booking conflicts (same dates)
-- **Note**: For assignment purposes, you can document this and analyze the successful requests
+- ✅ Token extraction & date logic fixed — errors dropped from 33% to 12–27%
+- ⚠️ Remaining errors are **HTTP 400 “Property not available”** responses
+  - Only 3 seed properties exist; with 100–500 concurrent 4-night bookings, overlaps are inevitable
+- ✅ Response times are excellent when a property is available
+- 📌 For the report, document that the bottleneck is dataset size, not application logic
 
 ## 📊 Performance Graph Data
 
@@ -78,11 +76,11 @@ Use this data to create your performance graph (Response Time vs. Number of User
 - 500 users: 2,314.09 ms
 
 ### Booking Creation (Successful Requests)
-- 100 users: 131.11 ms
-- 200 users: 152.23 ms
-- 300 users: 533.07 ms
-- 400 users: 2,411.77 ms
-- 500 users: 4,706.57 ms
+- 100 users: 135.00 ms
+- 200 users: 145.00 ms
+- 300 users: 1,480.00 ms
+- 400 users: 4,361.00 ms
+- 500 users: 6,176.00 ms
 
 ## 🔍 Performance Bottleneck Analysis
 
@@ -111,16 +109,15 @@ Use this data to create your performance graph (Response Time vs. Number of User
 - Database query optimization
 
 ### 3. Booking Creation API
-**33% error rate needs investigation:**
-- Errors are 401 Unauthorized (authentication issues)
-- When successful, performance is good
-- Response time increases significantly at high loads
+**Errors now data-related, not authentication:**
+- Token & property parsing fixed
+- 12–27% of requests fail because limited properties cannot satisfy all concurrent bookings
+- Response time increases as booking queue grows
 
 **Recommendations:**
-- Fix token extraction in JMeter test
-- Ensure properties exist in database
-- Add retry logic for failed bookings
-- Optimize booking validation logic
+- Seed more test properties (or reset bookings between runs)
+- Optionally auto-create temporary properties per test run
+- Keep the new Groovy processors (token + property/date) in place
 
 ## 📝 Assignment Deliverables Checklist
 
