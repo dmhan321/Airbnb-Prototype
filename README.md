@@ -194,7 +194,7 @@ Airbnb-Prototype/
 │   │   │   ├── routes/
 │   │   │   ├── kafka/           # Kafka consumer for status updates
 │   │   │   └── server.js
-│   │   ├── property-service/    # Property CRUD, search, photos
+│   │   ├── property-service/    # Property CRUD, searc![1763672907365](image/README/1763672907365.png)![1763672911757](image/README/1763672911757.png)h, photos
 │   │   │   ├── controllers/
 │   │   │   ├── routes/
 │   │   │   └── server.js
