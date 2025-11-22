@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>SCREENSHOT_30_Auth_Results</title>
+  <style>
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+background-color: #1a1a1a;
+border: none;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+</head>
+<body>
+<h1 id="screenshot-30-authentication-api-performance-test-results">Screenshot
+#30: Authentication API Performance Test Results</h1>
+<h2 id="test-configuration">Test Configuration</h2>
+<ul>
+<li><strong>API Endpoint:</strong> POST /api/auth/login</li>
+<li><strong>Test Scenario:</strong> Concurrent user authentication</li>
+<li><strong>Test Duration:</strong> Variable based on load</li>
+<li><strong>Ramp-up Period:</strong> 10 seconds</li>
+</ul>
+<hr />
+<h2 id="performance-summary---authentication-tests">Performance Summary
+- Authentication Tests</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 14%" />
+<col style="width: 23%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 8%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Load (Users)</th>
+<th>Total Samples</th>
+<th>Avg Response Time (ms)</th>
+<th>Min (ms)</th>
+<th>Max (ms)</th>
+<th>Error %</th>
+<th>Throughput (req/sec)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>100</td>
+<td>209.90</td>
+<td>196</td>
+<td>308</td>
+<td>0.00%</td>
+<td>3.33</td>
+</tr>
+<tr>
+<td>200</td>
+<td>200</td>
+<td>284.88</td>
+<td>190</td>
+<td>478</td>
+<td>0.00%</td>
+<td>6.67</td>
+</tr>
+<tr>
+<td>300</td>
+<td>300</td>
+<td>2,152.72</td>
+<td>247</td>
+<td>6,277</td>
+<td>0.00%</td>
+<td>10.00</td>
+</tr>
+<tr>
+<td>400</td>
+<td>400</td>
+<td>7,525.34</td>
+<td>251</td>
+<td>20,911</td>
+<td>0.00%</td>
+<td>13.33</td>
+</tr>
+<tr>
+<td>500</td>
+<td>500</td>
+<td>14,700.21</td>
+<td>98</td>
+<td>35,921</td>
+<td>1.20%</td>
+<td>16.67</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="key-findings">Key Findings</h2>
+<h3 id="excellent-performance-100-200-users">✅ Excellent Performance
+(100-200 Users)</h3>
+<ul>
+<li>Response times under 300ms</li>
+<li>Zero errors</li>
+<li>Consistent performance</li>
+<li><strong>Recommendation:</strong> System handles light to moderate
+load efficiently</li>
+</ul>
+<h3 id="performance-degradation-300-users">⚠️ Performance Degradation
+(300+ Users)</h3>
+<ul>
+<li><strong>300 users:</strong> Response time jumps to 2.15 seconds</li>
+<li><strong>400 users:</strong> Response time reaches 7.5 seconds</li>
+<li><strong>500 users:</strong> Response time 14.7 seconds with 1.2%
+error rate</li>
+<li><strong>Bottleneck identified:</strong> CPU-intensive bcrypt
+operations and MongoDB connection pool saturation</li>
+</ul>
+<hr />
+<h2 id="response-time-breakdown">Response Time Breakdown</h2>
+<p><strong>Best Performance:</strong> - Minimum: 98ms (500 user test) -
+Average at 100 users: 209.90ms</p>
+<p><strong>Performance Threshold:</strong> - Acceptable: &lt; 300
+concurrent users - Degraded: 300-500 concurrent users</p>
+<p><strong>Error Rate:</strong> - 0% errors up to 400 users - 1.2%
+errors at 500 users (6 failed requests)</p>
+<hr />
+<h2 id="throughput-analysis">Throughput Analysis</h2>
+<p>Linear scaling observed: - 100 users → 3.33 req/sec - 200 users →
+6.67 req/sec (2x increase) - 300 users → 10.00 req/sec (3x increase) -
+400 users → 13.33 req/sec (4x increase) - 500 users → 16.67 req/sec (5x
+increase)</p>
+<p><strong>Note:</strong> Throughput scales linearly while response time
+increases exponentially, indicating resource saturation.</p>
+<hr />
+<h2 id="recommendations">Recommendations</h2>
+<ol type="1">
+<li><strong>Horizontal Scaling:</strong> Deploy 3-5 authentication
+service replicas</li>
+<li><strong>Connection Pooling:</strong> Increase MongoDB pool from 10
+to 50-100 connections</li>
+<li><strong>Caching:</strong> Implement Redis for session caching</li>
+<li><strong>Rate Limiting:</strong> Add rate limiting to prevent
+abuse</li>
+</ol>
+<hr />
+<p><strong>Test Date:</strong> November 19, 2025<br />
+<strong>Test Tool:</strong> Apache JMeter 5.6.3<br />
+<strong>Infrastructure:</strong> AWS EKS Cluster (us-west-2)</p>
+</body>
+</html>
