@@ -420,8 +420,8 @@ const uploadProfilePicture = async (req, res) => {
     }
 
     const userId = req.user._id;
-    const baseUrl = process.env.PUBLIC_TRAVELER_SERVICE_URL || process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5001}`;
-    const profilePictureUrl = `${baseUrl}/uploads/profile-pictures/${req.file.filename}`;
+    // Use relative path so nginx can proxy it correctly
+    const profilePictureUrl = `/uploads/profile-pictures/${req.file.filename}`;
 
     const user = await Traveler.findById(userId);
 

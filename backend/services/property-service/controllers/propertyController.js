@@ -511,12 +511,12 @@ const uploadPropertyPhotos = async (req, res) => {
 
     // Process uploaded files
     const uploadedPhotos = [];
-    // Use PUBLIC_PROPERTY_SERVICE_URL for browser-accessible URLs, fallback to PROPERTY_SERVICE_URL
-    const PUBLIC_PROPERTY_SERVICE_URL = process.env.PUBLIC_PROPERTY_SERVICE_URL || process.env.PROPERTY_SERVICE_URL || 'http://localhost:5003';
+    // Use relative paths so nginx can proxy them correctly
+    // The frontend will handle these relative paths through nginx proxy
     
     files.forEach(file => {
-      // Construct URL for the uploaded photo (use public URL so browser can access it)
-      const photoUrl = `${PUBLIC_PROPERTY_SERVICE_URL}/uploads/property-photos/${file.filename}`;
+      // Use relative path - nginx will proxy /uploads/property-photos/ to property-service
+      const photoUrl = `/uploads/property-photos/${file.filename}`;
       uploadedPhotos.push(photoUrl);
     });
 

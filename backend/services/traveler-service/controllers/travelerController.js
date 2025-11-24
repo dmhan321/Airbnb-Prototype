@@ -100,8 +100,8 @@ const uploadProfilePicture = async (req, res) => {
     }
 
 
-    const baseUrl = process.env.PUBLIC_TRAVELER_SERVICE_URL || process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5001}`;
-    const profilePicture = `${baseUrl}/uploads/profile-pictures/${req.file.filename}`;
+    // Use relative path so nginx can proxy it correctly
+    const profilePicture = `/uploads/profile-pictures/${req.file.filename}`;
     
     // Delete old profile picture if it exists
     if (traveler.profilePicture) {

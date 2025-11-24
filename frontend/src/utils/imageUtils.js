@@ -144,7 +144,17 @@ export const getImageUrl = (imagePath) => {
   }
   
   // Determine service based on path content
-  if (imagePath.includes('profile-pictures') || imagePath.includes('profile')) {
+  if (imagePath.includes('owner-profile')) {
+    // Owner profile pictures use owner-profile path
+    if (imagePath.startsWith('/')) {
+      return imagePath; // Already has full path
+    }
+    return `/uploads/owner-profile/${imagePath}`;
+  } else if (imagePath.includes('profile-pictures') || imagePath.includes('profile')) {
+    // Traveler profile pictures use profile-pictures path
+    if (imagePath.startsWith('/')) {
+      return imagePath; // Already has full path
+    }
     return `/uploads/profile-pictures/${imagePath}`;
   } else if (imagePath.includes('property-photos') || imagePath.includes('property')) {
     return `/uploads/property-photos/${imagePath}`;

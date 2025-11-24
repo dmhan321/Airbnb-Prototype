@@ -14,8 +14,8 @@ const { requireAuth, requireOwner, getCurrentUser } = require('../../shared/midd
 const fs = require('fs');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // Save to profile-pictures subdirectory to match the URL structure
-    const uploadDir = path.join(__dirname, '../uploads/profile-pictures');
+    // Save to owner-profile subdirectory to match the URL structure
+    const uploadDir = path.join(__dirname, '../uploads/owner-profile');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }

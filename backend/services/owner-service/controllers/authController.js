@@ -22,7 +22,7 @@ const generateToken = (userId, userType) => {
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../uploads/profile-pictures');
+    const uploadDir = path.join(__dirname, '../uploads/owner-profile');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -391,8 +391,8 @@ const uploadProfilePicture = async (req, res) => {
     }
 
     const userId = req.user._id;
-    const baseUrl = process.env.PUBLIC_OWNER_SERVICE_URL || process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5002}`;
-    const profilePictureUrl = `${baseUrl}/uploads/profile-pictures/${req.file.filename}`;
+    // Use relative path so nginx can proxy it correctly (owner uses owner-profile path)
+    const profilePictureUrl = `/uploads/owner-profile/${req.file.filename}`;
 
     const user = await Owner.findById(userId);
 
@@ -411,7 +411,9 @@ const uploadProfilePicture = async (req, res) => {
       if (user.profilePicture.startsWith('http')) {
         const urlParts = user.profilePicture.split('/uploads/');
         if (urlParts.length > 1) {
-          oldFilePath = path.join(__dirname, '../../uploads/profile-pictures', urlParts[1].split('/').pop());
+          // Handle both owner-profile and profile-pictures (for old data)
+          const relativePath = urlParts[1];
+          oldFilePath = path.join(__dirname, '../../uploads', relativePath);
         }
       } else if (user.profilePicture.startsWith('/uploads/')) {
         oldFilePath = path.join(__dirname, '../..', user.profilePicture.substring(1));

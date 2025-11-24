@@ -56,21 +56,9 @@ spec:
           mountPath: /var/lib/zookeeper/data
         - name: zookeeper-log
           mountPath: /var/lib/zookeeper/log
-  volumeClaimTemplates:
-  - metadata:
-      name: zookeeper-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
-      storageClassName: gp2
-  - metadata:
-      name: zookeeper-log
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
-      storageClassName: gp2
+      volumes:
+      - name: zookeeper-data
+        emptyDir: {}
+      - name: zookeeper-log
+        emptyDir: {}
 
